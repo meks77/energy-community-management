@@ -1,0 +1,35 @@
+= Umsatzsteuererklärung
+
+== Warum
+
+Einmal im Jahr muss aktuell die Umsatzsteuererklärung erstellt werden.
+Zu diesem Zweck muss ein Formular des Finanzamts ausgefüllt werden.
+
+== manueller Aufwand im Jahr
+
+|===
+| Tätigkeit | Stunden
+| ? |  ?
+| Summe | ?
+|===
+
+== Status
+
+Auch bei EnergyFamily gibt es die Möglichkeit, eine Umsatzsteuererklärung zu erzeugen. Es sollte geprüft werden, ob das eine Option ist, um hier unnötigen Aufwand zu sparen.
+
+Die Umsetzung scheint möglich zu sein, aber Zahlungen müssen einmal bei Energy-Family Rechnungen, und einmal separat für die Umsatzsteuererklärung, Kunden zugewiesen werden. Das würde zusätzlichen manuellen Aufwand bedeuten. Außerdem können bei der manuellen Tätigkeit Fehler passieren.
+
+== Funktionalitäten
+
+* Summen aller Einnahmen(nur wirklich am Konto eingegangene im relevanten Jahr)
+* Für Firmen werden separate Summen benötigt
+* ein XML welches manuell zu Finanz-Online hochgeladen wird
+* nicht zuordenbare Zahlungen müssen manuell zugeordnet werden können
+
+Die Zahlungen müssen daher Rechnungen, und diese wieder Kunden zugeordnet werden können, damit erkannt werden kann, ob die Zahlung von einer Firma ist.
+
+== Voraussetzungen
+
+* Energy Family Mitgliederexport hat die Info, ob das Mitglied eine Firma ist(ist vorhanden)
+* CSV Export vom Bankkonto damit aufgrund des Zahlungsanweisers auf das Mitglied referenziert werden kann(muss noch geprüft werden)
+

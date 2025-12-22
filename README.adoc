@@ -1,0 +1,29 @@
+= Energy Community Management
+
+== Ziel
+
+Das Ziel dieses Projektes ist es, die Aufwände und Kosten einer Energiegemeinschaft möglichst gering zu halten.
+
+Die im Fokus stehende EEG ist https://www.hill-stromeeg.at[Hill Strom EEG].
+
+Die Ziele sind:
+
+* die EEG muss kein separates Programm kaufen oder abonnieren
+* die manuellen Aufwände werden auf ein Minimum reduziert
+* die Kosten/Nutzen-Effizienz soll gegeben sein
+
+== Rahmenbedingungen
+
+* Der Partner ist Energy-Family
+* Mehrere Benutzer müssen die Tätigkeiten durchführen können
+* Die Datenschutzauflagen müssen eingehalten werden
+* Die Daten müssen sicher vor Diebstahl sein
+
+== Anforderungen in Ausarbeitung
+
+Die Liste ist nicht priorisiert und in zufälliger Reihenfolge.
+
+* link:doc/inAusarbeitung/Umsatzsteuererklaerung.adoc[Umsatzsteuererklärung]
+* link:doc/inAusarbeitung/Saldenliste.adoc[Saldenliste]
+* link:doc/inAusarbeitung/ZahlungsClearing.adoc[automatisches Clearing der Zahlungen]
+* link:doc/inAusarbeitung/ZahlungsErinnerungen.adoc[automatische Zahlungserinnerungen]

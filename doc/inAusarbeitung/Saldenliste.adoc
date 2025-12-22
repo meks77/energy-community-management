@@ -1,0 +1,40 @@
+= Saldenliste
+
+== Warum
+
+Für das Finanzamt wird zur Belegung der Umsätze eine Saldenliste benötigt.
+
+== manueller Aufwand im Jahr
+
+|===
+| Tätigkeit | Stunden
+| ? |  ?
+| Summe | ?
+|===
+
+== Status
+
+Im ersten Schritt wurden Funktionalitäten nur Stichwortartig festgehalten.
+Anforderungen sind noch nicht klar genug.
+
+== Funktionalitäten
+
+Summe für Einnahmen und Ausgaben. Gewinn/Verlust
+
+Beispiel:
+
+[cols="1,1,1", options="header"]
+|===
+| Konto | Bezeichnung | Saldo
+| 0003  | Bank        | 245.00
+| 4301  | Umsatzerlöse | 3.000
+| 2700  | Kassa | 100.00
+| 7700  | Aufwand x | -70.0
+|===
+
+Nicht alle Eingänge sind Erlöse. Z.B. könnte eine Überweisung rückgebucht werden.
+Nicht alle Ausgänge sind Ausgaben. Z. B. könnte eine Zahlung einer Rechnung rückgebucht werden.
+
+== Voraussetzungen
+
+* CSV Export vom Bankkonto

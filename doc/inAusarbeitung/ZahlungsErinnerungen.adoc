@@ -1,0 +1,34 @@
+= Clearing von Zahlungen
+
+== Warum
+
+Manuell für nicht bezahlte Rechnungen Zahlungserinnerungen auszuschicken kostet Zeit und ist fehleranfällig.
+
+== manueller Aufwand im Jahr
+
+|===
+| Tätigkeit | Stunden
+| ? |  ?
+| Summe | ?
+|===
+
+== Status
+
+Die Anforderung wurde aufgenommen. Es müssen noch alle Details geklärt werden, bzw. kontrolliert werden ob Energy-Family eine ausreichende Funktionalität bereitstellt.
+
+== Funktionalitäten
+
+Für die offenen Rechnungen wird pro Mitglied mit offenen Rechnung, eine Email mit den offenen Rechnungen ausgeschickt.
+
+== Voraussetzungen
+Entweder
+
+* Rechnungsexport von Energy-Family(aktuell nicht möglich)
+* vollwertiger Mitgliederexport von Energy-Family(aktuell nicht verfügbar)
+* fertiges Zahlungs-Clearing
+
+oder Zugang zum System von Energyfamily um
+
+* nicht bezahlte Rechnungen abzufragen
+* Mitgliedinformationen(Name, Adresse, Email) abzufragen
+

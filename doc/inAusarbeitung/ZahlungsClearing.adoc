@@ -1,0 +1,24 @@
+= Clearing von Zahlungen
+
+
+== Warum
+
+Es wird das ganze Jahr über Aufwand betrieben Rechnungen als bezahlt zu markieren.
+
+== manueller Aufwand im Jahr
+
+|===
+| Tätigkeit | Stunden
+| ? |  ?
+| Summe | ?
+|===
+
+== Status
+
+Es wurde nur mal die Anforderung als Idee aufgenommen, nachdem in einem Gespräch erkannt wurde, dass der Obmann viel Zeit damit verbringt, augrund von Zahlungseingängen, Rechnungen bei Energy-Family als bezahlt zu vermerken.
+
+== Funktionalitäten
+
+== Voraussetzungen
+
+
