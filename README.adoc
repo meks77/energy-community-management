@@ -14,10 +14,27 @@ Die Ziele sind:
 
 == Rahmenbedingungen
 
+=== Fachliche Rahmenbedingungen
+
 * Der Partner ist Energy-Family
 * Mehrere Benutzer müssen die Tätigkeiten durchführen können
 * Die Datenschutzauflagen müssen eingehalten werden
 * Die Daten müssen sicher vor Diebstahl sein
+* Nur berechtigte Benutzer können das Programm nutzen
+
+=== Technische Rahmenbedingungen
+
+* Die fachliche Domäne wird bevorzugt in Kotlin implementiert
+* In der fachlichen Domänen-Implementierung kommen möglichst keine 3rd-Party-Libs vor
+* Das Projekt wird bevorzugt als Event-Sourcing Projekt umgesetzt
+* Falls eine Speicherung notwendig ist
+** ist diese bevorzugt verschlüsselt
+** ist diese zentral oder die gespeicherten Daten können zwischen den Benutzern ausgetauscht werden
+** ist ein Backup notwendig
+* Clean Architecture(von Uncle Bob) wird so weit wie möglich eingehalten
+* Clean Code wird eingehalten
+* Beispiele der Spezifikation(Specification by Example) sollen ausführbar sein, und in zumindest in der eigentlichen Spezifikation verlinkt sein. Noch besser wäre es, wenn die ganze Spezifikation ausführbar wäre(wie z.B. mit https://www.concordion.org[Concordion] )
+
 
 == Anforderungen in Ausarbeitung
 
