@@ -30,6 +30,7 @@ Die Zahlungen müssen daher Rechnungen, und diese wieder Kunden zugeordnet werde
 
 == Voraussetzungen
 
-* Energy Family Mitgliederexport hat die Info, ob das Mitglied eine Firma ist(ist vorhanden)
-* CSV Export vom Bankkonto damit aufgrund des Zahlungsanweisers auf das Mitglied referenziert werden kann(muss noch geprüft werden)
+* Energy Family Mitgliederexport hat die Info, ob das Mitglied eine Firma ist(ist vorhanden) oder
+* Rechnungsexport von Energyfamily mit der Info, ob das Mitglied eine Firma ist(ist vorhanden)
+* CSV Export vom Bankkonto damit aufgrund der Zahlungsreferenz oder des Zahlungsanweisers auf das Mitglied referenziert werden kann(muss noch geprüft werden)
 
