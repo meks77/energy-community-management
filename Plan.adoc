@@ -1,0 +1,41 @@
+= Projektplan: Energy Community Management
+
+== Überblick
+Das Ziel dieses Projektes ist die Automatisierung der Verwaltungsabläufe für die Energiegemeinschaft "Hill Strom EEG", um manuelle Aufwände und Kosten zu minimieren. Dabei liegt der Fokus auf der Integration von Daten aus Energy-Family und Bankkonto-Exporten (CSV), um steuerliche Meldungen (Umsatzsteuer) und die Finanzverwaltung (Saldenliste, Zahlungs-Clearing) zu vereinfachen.
+
+== Hauptphasen der Entwicklung
+
+=== Phase 1: Fundament & Domänenmodell (Core)
+*   **Domänendesign:** Definition der Kernentitäten (Mitglied, Rechnung, Zahlung, Buchung) in Kotlin gemäß Clean Architecture und Clean Code Prinzipien.
+*   **Event-Sourcing Infrastruktur:** Implementierung oder Integration eines Event-Sourcing Frameworks (z.B. Axonframework), unter Beachtung der Einschränkung von 3rd-Party-Libs in der Domäne.
+*   **Verschlüsselung & Datensicherheit:** Umsetzung der verschlüsselten Speicherung und Mechanismen für Backup sowie Datenaustausch zwischen Benutzern.
+
+=== Phase 2: Datenimport & Integration
+*   **Energy-Family Integration:** Entwicklung von Adaptern für Mitgliederexporte und Rechnungsexporte.
+*   **Bank-Integration:** Flexible Parser für Bankkonto-CSV-Exporte (Prüfung der Referenzierbarkeit über Zahlungsreferenz/Anweiser).
+*   **Mapping-Logik:** Entwicklung von Algorithmen zur Zuordnung von Zahlungen zu Rechnungen/Mitgliedern, inklusive Behandlung nicht zuordenbarer Zahlungen.
+
+=== Phase 3: Funktionale Module (Features)
+*   **Modul Zahlungs-Clearing:** Automatisches Abgleichen von Bankeingängen mit offenen Posten in Energy-Family.
+*   **Modul Umsatzsteuererklärung:** Aggregation der Einnahmen (Ist-Versteuerung), Trennung nach Firmen/Privaten und XML-Export für Finanz-Online.
+*   **Modul Saldenliste:** Erstellung einer Übersicht von Einnahmen, Ausgaben und Salden (Gewinn/Verlust) für das Finanzamt.
+*   **Modul Zahlungserinnerungen:** Automatisierter Emailversand für überfällige Rechnungen basierend auf den Clearing-Daten.
+
+=== Phase 4: Validierung & Spezifikation
+*   **Executable Specifications:** Umsetzung der Spezifikationen als ausführbare Dokumentation (z.B. mit Concordion), sodass die gesamte Spezifikation automatisiert geprüft werden kann.
+*   **Clean Code & Architektur-Audit:** Kontinuierliche Prüfung der Einhaltung der technischen Rahmenbedingungen (Uncle Bob's Clean Architecture).
+
+== Abhängigkeiten, Risiken & Überlegungen
+
+=== Abhängigkeiten
+*   **Datenverfügbarkeit:** Die Automatisierung der Zahlungserinnerungen und der Umsatzsteuererklärung hängt stark von der Qualität und Verfügbarkeit der Exporte von Energy-Family ab.
+*   **Bank-CSV Format:** Das Format des Bankexports muss stabil sein oder durch konfigurierbare Parser flexibel gehalten werden.
+
+=== Risiken
+*   **Fehlzuordnungen:** Manuelle Eingriffe bei nicht eindeutig zuordenbaren Zahlungen müssen robust gelöst werden (siehe Umsatzsteuer-Anforderung), um steuerliche Fehler zu vermeiden.
+*   **Sicherheit:** Da sensible Finanzdaten verarbeitet werden, ist die Implementierung der Verschlüsselung (wie in den Rahmenbedingungen gefordert) ein kritisches Erfolgskriterium.
+*   **Drittanbieter-Libs:** Die Einschränkung auf möglichst keine 3rd-Party-Libs in der Domäne bei gleichzeitiger Nutzung von Frameworks wie Axon erfordert eine sorgfältige Trennung der Adapter.
+
+=== Besondere Überlegungen
+*   **Multi-User Fähigkeit:** Da mehrere Benutzer das System nutzen sollen, muss der Datenaustausch (zentral oder dezentral) im Architekturdesign von Anfang an berücksichtigt werden.
+*   **Clean Architecture:** Strikte Trennung zwischen Domänenlogik und technischen Details (Frameworks, Parser, UI), um die Wartbarkeit langfristig zu gewährleisten.

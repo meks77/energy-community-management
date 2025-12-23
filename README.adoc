@@ -26,7 +26,8 @@ Die Ziele sind:
 
 * Die fachliche Domäne wird bevorzugt in Kotlin implementiert
 * In der fachlichen Domänen-Implementierung kommen möglichst keine 3rd-Party-Libs vor
-* Das Projekt wird bevorzugt als Event-Sourcing Projekt umgesetzt
+* Die Adapter dürfen 3rd Party Libraries verwenden
+* Das Projekt wird bevorzugt als Event-Sourcing Projekt umgesetzt(z.B. mit Hilfe von Axonframework)
 * Falls eine Speicherung notwendig ist
 ** ist diese bevorzugt verschlüsselt
 ** ist diese zentral oder die gespeicherten Daten können zwischen den Benutzern ausgetauscht werden
