@@ -6,7 +6,7 @@ import kotlin.test.assertTrue
 
 class MitgliedTest {
 
-    private val kundennummer = "K12345"
+    private val kundennummer = Mitgliedsnummer("K12345")
     private val initialAdresse = Adresse("Musterstraße", "1", "1234", "Musterstadt")
     private val initialProperties = MitgliedProperties(
         "Max Mustermann",

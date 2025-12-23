@@ -1,5 +1,7 @@
 package at.hillstrom.energy.domain.mitglied
 
+data class Mitgliedsnummer(val wert: String)
+
 enum class Steuerklasse {
     PRIVAT,
     KLEINUNTERNEHMER,
@@ -21,11 +23,11 @@ data class MitgliedProperties(
 )
 
 sealed class MitgliedEvent {
-    abstract val kundennummer: String
+    abstract val kundennummer: Mitgliedsnummer
 }
 
 data class MitgliedAngelegt(
-    override val kundennummer: String,
+    override val kundennummer: Mitgliedsnummer,
     val name: String,
     val adresse: Adresse,
     val email: String,
@@ -35,21 +37,21 @@ data class MitgliedAngelegt(
 sealed class MitgliedGeandertEvent : MitgliedEvent()
 
 data class NameGeaendert(
-    override val kundennummer: String,
+    override val kundennummer: Mitgliedsnummer,
     val neuerName: String
 ) : MitgliedGeandertEvent()
 
 data class AdresseGeaendert(
-    override val kundennummer: String,
+    override val kundennummer: Mitgliedsnummer,
     val neueAdresse: Adresse
 ) : MitgliedGeandertEvent()
 
 data class EmailGeaendert(
-    override val kundennummer: String,
+    override val kundennummer: Mitgliedsnummer,
     val neueEmail: String
 ) : MitgliedGeandertEvent()
 
 data class SteuerklasseGeaendert(
-    override val kundennummer: String,
+    override val kundennummer: Mitgliedsnummer,
     val neueSteuerklasse: Steuerklasse
 ) : MitgliedGeandertEvent()

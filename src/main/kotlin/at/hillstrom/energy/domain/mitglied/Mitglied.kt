@@ -1,7 +1,7 @@
 package at.hillstrom.energy.domain.mitglied
 
 class Mitglied private constructor(
-    val kundennummer: String,
+    val kundennummer: Mitgliedsnummer,
     var name: String,
     var adresse: Adresse,
     var email: String,
@@ -12,7 +12,7 @@ class Mitglied private constructor(
         importiertEvent.adresse, importiertEvent.email, importiertEvent.steuerklasse)
 
     companion object {
-        fun erstelleMitglied(kundennummer: String, properties: MitgliedProperties): MitgliedAngelegt {
+        fun erstelleMitglied(kundennummer: Mitgliedsnummer, properties: MitgliedProperties): MitgliedAngelegt {
             return MitgliedAngelegt(kundennummer, properties.name, properties.adresse, properties.email, properties.steuerklasse)
         }
     }
