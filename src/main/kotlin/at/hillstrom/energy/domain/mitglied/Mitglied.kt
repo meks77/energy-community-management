@@ -1,4 +1,5 @@
 package at.hillstrom.energy.domain.mitglied
+import at.hillstrom.energy.*
 
 class Mitglied private constructor(
     val kundennummer: Mitgliedsnummer,

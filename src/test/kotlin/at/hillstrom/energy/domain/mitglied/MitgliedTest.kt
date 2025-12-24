@@ -1,4 +1,5 @@
 package at.hillstrom.energy.domain.mitglied
+import at.hillstrom.energy.*
 
 import kotlin.test.Test
 import kotlin.test.assertEquals

@@ -1,7 +1,5 @@
 package at.hillstrom.energy.domain.umsatz
-
-import at.hillstrom.energy.domain.rechnung.Betrag
-import at.hillstrom.energy.domain.rechnung.Datum
+import at.hillstrom.energy.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal

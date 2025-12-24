@@ -1,4 +1,5 @@
 package at.hillstrom.energy.domain.rechnung
+import at.hillstrom.energy.*
 
 import java.nio.charset.StandardCharsets
 import java.util.UUID

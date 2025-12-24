@@ -1,4 +1,5 @@
 package at.hillstrom.energy.domain.umsatz
+import at.hillstrom.energy.*
 
 class Umsatz private constructor(
     val buchungsreferenz: Buchungsreferenz,

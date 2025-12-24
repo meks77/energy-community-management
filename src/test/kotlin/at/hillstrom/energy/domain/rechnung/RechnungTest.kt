@@ -1,7 +1,5 @@
 package at.hillstrom.energy.domain.rechnung
-
-import at.hillstrom.energy.domain.mitglied.Mitgliedsnummer
-import at.hillstrom.energy.domain.mitglied.Steuerklasse
+import at.hillstrom.energy.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
