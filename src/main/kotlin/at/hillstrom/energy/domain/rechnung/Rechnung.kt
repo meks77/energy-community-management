@@ -24,7 +24,7 @@ class Rechnung private constructor(
 
         private fun generiereId(properties: RechnungProperties): UUID {
             // Logisch ist die Rechnung aufgrund der Mitgliedsnummer, dem Rechnungsdatum und dem Rechnungsbetrag identifizierbar
-            val identifier = "${properties.mitgliedsnummer.wert}|${properties.rechnungsdatum}|${properties.bruttobetrag}"
+            val identifier = "${properties.mitgliedsnummer.wert}|${properties.rechnungsdatum.wert.wert}|${properties.bruttobetrag.wert.wert}"
             return UUID.nameUUIDFromBytes(identifier.toByteArray(StandardCharsets.UTF_8))
         }
     }

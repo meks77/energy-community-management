@@ -2,9 +2,9 @@ package at.hillstrom.energy.domain.mitglied
 
 class Mitglied private constructor(
     val kundennummer: Mitgliedsnummer,
-    var name: String,
+    var name: Name,
     var adresse: Adresse,
-    var email: String,
+    var email: Email,
     var steuerklasse: Steuerklasse
 ) {
 

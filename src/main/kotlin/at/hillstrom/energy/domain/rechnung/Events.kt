@@ -6,6 +6,16 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.UUID
 
+data class Betrag(val wert: BigDecimal)
+data class Rechnungsnummer(val wert: String)
+data class Datum(val wert: LocalDate)
+
+data class Nettobetrag(val wert: Betrag)
+data class Bruttobetrag(val wert: Betrag)
+data class Umsatzsteuer(val wert: Betrag)
+data class Rechnungsdatum(val wert: Datum)
+data class Faelligkeitsdatum(val wert: Datum)
+
 enum class RechnungsSteuerklasse {
     PRIVAT,
     UMSATZSTEUERPFLICHTIG;
@@ -23,12 +33,12 @@ enum class RechnungsSteuerklasse {
 
 data class RechnungProperties(
     val mitgliedsnummer: Mitgliedsnummer,
-    val nettobetrag: BigDecimal,
-    val bruttobetrag: BigDecimal,
-    val umsatzsteuer: BigDecimal,
-    val rechnungsnummer: String,
-    val rechnungsdatum: LocalDate,
-    val faelligkeitsdatum: LocalDate,
+    val nettobetrag: Nettobetrag,
+    val bruttobetrag: Bruttobetrag,
+    val umsatzsteuer: Umsatzsteuer,
+    val rechnungsnummer: Rechnungsnummer,
+    val rechnungsdatum: Rechnungsdatum,
+    val faelligkeitsdatum: Faelligkeitsdatum,
     val steuerklasse: RechnungsSteuerklasse
 )
 

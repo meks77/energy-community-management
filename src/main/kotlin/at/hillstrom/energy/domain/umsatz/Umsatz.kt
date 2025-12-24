@@ -1,7 +1,7 @@
 package at.hillstrom.energy.domain.umsatz
 
 class Umsatz private constructor(
-    val buchungsreferenz: String,
+    val buchungsreferenz: Buchungsreferenz,
     val properties: UmsatzProperties
 ) {
 

@@ -5,13 +5,13 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class MitgliedTest {
-
+    
     private val kundennummer = Mitgliedsnummer("K12345")
-    private val initialAdresse = Adresse("Musterstraße", "1", "1234", "Musterstadt")
+    private val initialAdresse = Adresse(Strasse("Musterstraße"), Hausnummer("1"), PLZ("1234"), Ort("Musterstadt"))
     private val initialProperties = MitgliedProperties(
-        "Max Mustermann",
+        Name("Max Mustermann"),
         initialAdresse,
-        "max@mustermann.de",
+        Email("max@mustermann.de"),
         Steuerklasse.PRIVAT
     )
 
@@ -31,20 +31,20 @@ class MitgliedTest {
         val event = Mitglied.erstelleMitglied(kundennummer, initialProperties)
         val mitglied = Mitglied(event)
 
-        val neueAdresse = initialAdresse.copy(strasse = "Neue Straße")
+        val neueAdresse = initialAdresse.copy(strasse = Strasse("Neue Straße"))
         val neueProperties = initialProperties.copy(
-            name = "Max Musterfrau",
+            name = Name("Max Musterfrau"),
             adresse = neueAdresse,
-            email = "max@musterfrau.de",
+            email = Email("max@musterfrau.de"),
             steuerklasse = Steuerklasse.UMSATZSTEUERPFLICHTIG
         )
 
         val events = mitglied.aktualisiereMitglied(neueProperties)
 
         assertEquals(4, events.size)
-        assertTrue(events.any { it is NameGeaendert && it.neuerName == "Max Musterfrau" })
+        assertTrue(events.any { it is NameGeaendert && it.neuerName == Name("Max Musterfrau") })
         assertTrue(events.any { it is AdresseGeaendert && it.neueAdresse == neueAdresse })
-        assertTrue(events.any { it is EmailGeaendert && it.neueEmail == "max@musterfrau.de" })
+        assertTrue(events.any { it is EmailGeaendert && it.neueEmail == Email("max@musterfrau.de") })
         assertTrue(events.any { it is SteuerklasseGeaendert && it.neueSteuerklasse == Steuerklasse.UMSATZSTEUERPFLICHTIG })
     }
 
@@ -61,17 +61,17 @@ class MitgliedTest {
     @Test
     fun `apply aktualisiert den Namen`() {
         val mitglied = Mitglied(Mitglied.erstelleMitglied(kundennummer, initialProperties))
-        val event = NameGeaendert(kundennummer, "Neuer Name")
+        val event = NameGeaendert(kundennummer, Name("Neuer Name"))
         
         mitglied.apply(event)
         
-        assertEquals("Neuer Name", mitglied.name)
+        assertEquals(Name("Neuer Name"), mitglied.name)
     }
 
     @Test
     fun `apply aktualisiert die Adresse`() {
         val mitglied = Mitglied(Mitglied.erstelleMitglied(kundennummer, initialProperties))
-        val neueAdresse = initialAdresse.copy(strasse = "Neue Strasse")
+        val neueAdresse = initialAdresse.copy(strasse = Strasse("Neue Strasse"))
         val event = AdresseGeaendert(kundennummer, neueAdresse)
         
         mitglied.apply(event)
@@ -82,11 +82,11 @@ class MitgliedTest {
     @Test
     fun `apply aktualisiert die Email`() {
         val mitglied = Mitglied(Mitglied.erstelleMitglied(kundennummer, initialProperties))
-        val event = EmailGeaendert(kundennummer, "neu@email.de")
+        val event = EmailGeaendert(kundennummer, Email("neu@email.de"))
         
         mitglied.apply(event)
         
-        assertEquals("neu@email.de", mitglied.email)
+        assertEquals(Email("neu@email.de"), mitglied.email)
     }
 
     @Test

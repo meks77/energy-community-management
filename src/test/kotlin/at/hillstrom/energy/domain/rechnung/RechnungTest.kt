@@ -13,12 +13,12 @@ class RechnungTest {
     fun `erstellt eine Rechnung mit deterministischer ID`() {
         val properties = RechnungProperties(
             mitgliedsnummer = Mitgliedsnummer("M123"),
-            nettobetrag = BigDecimal("100.00"),
-            bruttobetrag = BigDecimal("120.00"),
-            umsatzsteuer = BigDecimal("20.00"),
-            rechnungsnummer = "R-2023-001",
-            rechnungsdatum = LocalDate.of(2023, 12, 23),
-            faelligkeitsdatum = LocalDate.of(2024, 1, 23),
+            nettobetrag = Nettobetrag(Betrag(BigDecimal("100.00"))),
+            bruttobetrag = Bruttobetrag(Betrag(BigDecimal("120.00"))),
+            umsatzsteuer = Umsatzsteuer(Betrag(BigDecimal("20.00"))),
+            rechnungsnummer = Rechnungsnummer("R-2023-001"),
+            rechnungsdatum = Rechnungsdatum(Datum(LocalDate.of(2023, 12, 23))),
+            faelligkeitsdatum = Faelligkeitsdatum(Datum(LocalDate.of(2024, 1, 23))),
             steuerklasse = RechnungsSteuerklasse.UMSATZSTEUERPFLICHTIG
         )
 
@@ -33,12 +33,12 @@ class RechnungTest {
         assertEquals(event.id, event2.id)
 
         // Verifiziere unterschiedliche ID bei anderem Betrag
-        val properties2 = properties.copy(bruttobetrag = BigDecimal("121.00"))
+        val properties2 = properties.copy(bruttobetrag = Bruttobetrag(Betrag(BigDecimal("121.00"))))
         val event3 = Rechnung.erstelleRechnung(properties2)
         assertNotEquals(event.id, event3.id)
 
         // Verifiziere unterschiedliche ID bei anderem Datum
-        val properties3 = properties.copy(rechnungsdatum = LocalDate.of(2023, 12, 24))
+        val properties3 = properties.copy(rechnungsdatum = Rechnungsdatum(Datum(LocalDate.of(2023, 12, 24))))
         val event4 = Rechnung.erstelleRechnung(properties3)
         assertNotEquals(event.id, event4.id)
 
@@ -52,12 +52,12 @@ class RechnungTest {
     fun `erkennt wenn eine Rechnung bereits existiert anhand der deterministischen ID`() {
         val properties = RechnungProperties(
             mitgliedsnummer = Mitgliedsnummer("M123"),
-            nettobetrag = BigDecimal("100.00"),
-            bruttobetrag = BigDecimal("120.00"),
-            umsatzsteuer = BigDecimal("20.00"),
-            rechnungsnummer = "R-2023-001",
-            rechnungsdatum = LocalDate.of(2023, 12, 23),
-            faelligkeitsdatum = LocalDate.of(2024, 1, 23),
+            nettobetrag = Nettobetrag(Betrag(BigDecimal("100.00"))),
+            bruttobetrag = Bruttobetrag(Betrag(BigDecimal("120.00"))),
+            umsatzsteuer = Umsatzsteuer(Betrag(BigDecimal("20.00"))),
+            rechnungsnummer = Rechnungsnummer("R-2023-001"),
+            rechnungsdatum = Rechnungsdatum(Datum(LocalDate.of(2023, 12, 23))),
+            faelligkeitsdatum = Faelligkeitsdatum(Datum(LocalDate.of(2024, 1, 23))),
             steuerklasse = RechnungsSteuerklasse.UMSATZSTEUERPFLICHTIG
         )
 
@@ -77,12 +77,12 @@ class RechnungTest {
     fun `wirft Fehler wenn Rechnung mit gleicher ID aber abweichenden Werten erstellt wird`() {
         val properties = RechnungProperties(
             mitgliedsnummer = Mitgliedsnummer("M123"),
-            nettobetrag = BigDecimal("100.00"),
-            bruttobetrag = BigDecimal("120.00"),
-            umsatzsteuer = BigDecimal("20.00"),
-            rechnungsnummer = "R-2023-001",
-            rechnungsdatum = LocalDate.of(2023, 12, 23),
-            faelligkeitsdatum = LocalDate.of(2024, 1, 23),
+            nettobetrag = Nettobetrag(Betrag(BigDecimal("100.00"))),
+            bruttobetrag = Bruttobetrag(Betrag(BigDecimal("120.00"))),
+            umsatzsteuer = Umsatzsteuer(Betrag(BigDecimal("20.00"))),
+            rechnungsnummer = Rechnungsnummer("R-2023-001"),
+            rechnungsdatum = Rechnungsdatum(Datum(LocalDate.of(2023, 12, 23))),
+            faelligkeitsdatum = Faelligkeitsdatum(Datum(LocalDate.of(2024, 1, 23))),
             steuerklasse = RechnungsSteuerklasse.UMSATZSTEUERPFLICHTIG
         )
 
@@ -90,7 +90,7 @@ class RechnungTest {
         val rechnung = Rechnung(event)
 
         // Abweichende Rechnungsnummer (nicht Teil der ID-Generierung)
-        val abweichendeProperties = properties.copy(rechnungsnummer = "R-2023-002")
+        val abweichendeProperties = properties.copy(rechnungsnummer = Rechnungsnummer("R-2023-002"))
         
         val neuesEvent = Rechnung.erstelleRechnung(abweichendeProperties)
         assertEquals(rechnung.id, neuesEvent.id, "ID muss gleich sein, da Mitglied, Datum und Bruttobetrag gleich sind")
