@@ -117,7 +117,7 @@ data class RechnungErstellt(
     val properties: RechnungProperties
 ) : RechnungEvent()
 
-// --- Umsatz ---
+// --- Kontoumsatz ---
 
 data class Partnername(val wert: String)
 data class IBAN(val wert: String)
@@ -127,24 +127,24 @@ data class MandatsId(val wert: String)
 data class Buchungsdetails(val wert: String)
 
 data class Buchungsdatum(val wert: Datum)
-data class Umsatzbetrag(val wert: Betrag)
+data class Kontoumsatzbetrag(val wert: Betrag)
 
-data class UmsatzProperties(
+data class KontoumsatzProperties(
     val buchungsdatum: Buchungsdatum,
     val partnername: Partnername,
     val partnerIban: IBAN?,
-    val betrag: Umsatzbetrag,
+    val betrag: Kontoumsatzbetrag,
     val buchungsdetails: Buchungsdetails?,
     val buchungsreferenz: Buchungsreferenz,
     val zahlungsreferenz: Zahlungsreferenz?,
     val mandatsId: MandatsId?
 )
 
-sealed class UmsatzEvent {
+sealed class KontoumsatzEvent {
     abstract val buchungsreferenz: Buchungsreferenz
 }
 
-data class UmsatzImportiert(
+data class KontoumsatzImportiert(
     override val buchungsreferenz: Buchungsreferenz,
-    val properties: UmsatzProperties
-) : UmsatzEvent()
+    val properties: KontoumsatzProperties
+) : KontoumsatzEvent()

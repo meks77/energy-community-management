@@ -9,48 +9,48 @@ class UmsatzTest {
 
     @Test
     fun `importiert einen Umsatz`() {
-        val properties = UmsatzProperties(
+        val properties = KontoumsatzProperties(
             buchungsdatum = Buchungsdatum(Datum(LocalDate.of(2023, 12, 24))),
             partnername = Partnername("Max Mustermann"),
             partnerIban = IBAN("AT123456789012345678"),
-            betrag = Umsatzbetrag(Betrag(BigDecimal("100.50"))),
+            betrag = Kontoumsatzbetrag(Betrag(BigDecimal("100.50"))),
             buchungsdetails = Buchungsdetails("Geschenk"),
             buchungsreferenz = Buchungsreferenz("REF-123"),
             zahlungsreferenz = Zahlungsreferenz("Z-REF-123"),
             mandatsId = MandatsId("MANDAT-1")
         )
 
-        val event = Umsatz.importiereUmsatz(properties)
-        val umsatz = Umsatz(event)
+        val event = Kontoumsatz.importiereUmsatz(properties)
+        val kontoumsatz = Kontoumsatz(event)
 
-        assertEquals(properties, umsatz.properties)
-        assertEquals(Buchungsreferenz("REF-123"), umsatz.buchungsreferenz)
+        assertEquals(properties, kontoumsatz.properties)
+        assertEquals(Buchungsreferenz("REF-123"), kontoumsatz.buchungsreferenz)
     }
 
     @Test
     fun `validiert Gleichheit bei Duplikaten`() {
-        val properties = UmsatzProperties(
+        val properties = KontoumsatzProperties(
             buchungsdatum = Buchungsdatum(Datum(LocalDate.of(2023, 12, 24))),
             partnername = Partnername("Max Mustermann"),
             partnerIban = IBAN("AT123456789012345678"),
-            betrag = Umsatzbetrag(Betrag(BigDecimal("100.50"))),
+            betrag = Kontoumsatzbetrag(Betrag(BigDecimal("100.50"))),
             buchungsdetails = Buchungsdetails("Geschenk"),
             buchungsreferenz = Buchungsreferenz("REF-123"),
             zahlungsreferenz = Zahlungsreferenz("Z-REF-123"),
             mandatsId = MandatsId("MANDAT-1")
         )
 
-        val umsatz = Umsatz(Umsatz.importiereUmsatz(properties))
+        val kontoumsatz = Kontoumsatz(Kontoumsatz.importiereUmsatz(properties))
 
         // Gleiche Properties sollten kein Problem sein
         assertDoesNotThrow {
-            umsatz.validiereGleichheit(properties)
+            kontoumsatz.validiereGleichheit(properties)
         }
 
         // Abweichende Properties sollten Fehler werfen
-        val abweichendeProperties = properties.copy(betrag = Umsatzbetrag(Betrag(BigDecimal("200.00"))))
+        val abweichendeProperties = properties.copy(betrag = Kontoumsatzbetrag(Betrag(BigDecimal("200.00"))))
         val exception = assertThrows(IllegalArgumentException::class.java) {
-            umsatz.validiereGleichheit(abweichendeProperties)
+            kontoumsatz.validiereGleichheit(abweichendeProperties)
         }
         assertTrue(exception.message!!.contains("REF-123"))
     }
