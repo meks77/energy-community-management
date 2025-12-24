@@ -1,7 +1,7 @@
 = Aufgabenliste: Energy Community Management
 
 == Phase 1: Fundament & Domänenmodell (Core)
-1. [ ] Kernentitäten (Mitglied, Rechnung, Zahlung, Buchung) in Kotlin gemäß Clean Architecture Prinzipien definieren. (Mitglied und Rechnung implementiert, inklusive Tests für Duplikate)
+1. [ ] Kernentitäten (Mitglied, Rechnung, Zahlung, Buchung) in Kotlin gemäß Clean Architecture Prinzipien definieren. (Mitglied, Rechnung und Umsatz implementiert, inklusive Tests für Duplikate)
 2. [ ] Event-Sourcing-Infrastruktur (z. B. Axonframework) implementieren oder integrieren.
 3. [ ] Strikte Trennung von Drittanbieter-Bibliotheken von der Domänenschicht sicherstellen.
 4. [ ] Verschlüsselte Speicherung für sensible Finanzdaten implementieren.
