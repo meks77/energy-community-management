@@ -1,6 +1,7 @@
-package at.hillstrom.energy.domain.rechnung
-import at.hillstrom.energy.*
+package at.hillstrom.energy.usecases.rechnungsimport
 
+import at.hillstrom.energy.RechnungErstellt
+import at.hillstrom.energy.RechnungProperties
 import java.nio.charset.StandardCharsets
 import java.util.UUID
 

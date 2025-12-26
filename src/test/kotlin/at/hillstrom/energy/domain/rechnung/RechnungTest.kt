@@ -1,5 +1,6 @@
 package at.hillstrom.energy.domain.rechnung
 import at.hillstrom.energy.*
+import at.hillstrom.energy.usecases.rechnungsimport.Rechnung
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal

@@ -1,5 +1,8 @@
-package at.hillstrom.energy.domain.umsatz
-import at.hillstrom.energy.*
+package at.hillstrom.energy.usecases.kontoumsatzimport
+
+import at.hillstrom.energy.Buchungsreferenz
+import at.hillstrom.energy.KontoumsatzImportiert
+import at.hillstrom.energy.KontoumsatzProperties
 
 class Kontoumsatz private constructor(
     val buchungsreferenz: Buchungsreferenz,
