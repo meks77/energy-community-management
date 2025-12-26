@@ -5,7 +5,8 @@
 . [x] Use-Case "Import von Mitgliedern" (inkl. Bulk-Import & Fehlerhandling)
 . [x] Use-Case "Import von Rechnungen"
 . [x] Use-Case "Import von Kontoumsätzen"
-. [ ] Use-Case "Zahlungs-Clearing": Spezifisches Modell und Logik zur Zuordnung von Zahlungen implementieren.
+. [ ] Use-Case "Automatisches Zahlungs-Clearing": Spezifisches Modell und Logik zur Zuordnung von Zahlungen implementieren.
+. [ ] Use-Case "Manuelles Zahlungs-Clearing": Spezifisches Modell und Logik zur manuellen Zuordnung von Zahlungen implementieren.
 . [ ] Use-Case "Umsatzsteuer-Ermittlung": Spezifisches Modell zur Aggregation von Einnahmen nach Steuersätzen implementieren.
 . [ ] Use-Case "Saldenliste": Spezifisches Modell für die Gewinn/Verlust-Übersicht implementieren.
 . [ ] Sicherstellen, dass die Domänenlogik rein in Kotlin und ohne Framework-Abhängigkeiten (z.B. Axon) implementiert ist.
@@ -26,7 +27,10 @@
 . [ ] Modul Zahlungserinnerungen implementieren: UI + Automatisierter E-Mail-Versand basierend auf Clearing-Events.
 
 == Phase 4: Validierung & Spezifikation
-17. [ ] Framework für ausführbare Spezifikationen (z. B. Concordion) einrichten.
-18. [ ] Automatisierte Tests für alle Spezifikationen implementieren.
-19. [ ] Clean Code & Architektur-Audit durchführen.
-20. [ ] Verifizieren, dass die gesamte Domänenlogik unabhängig von technischen Details bleibt.
+. [x] Framework für ausführbare Spezifikationen (z. B. Cucumber) einrichten.
+. [x] Automatisierte Tests für alle Spezifikationen implementieren.
+.. [x] Mitglieder-Import (neue, existierende, geänderte Mitglieder)
+.. [x] Rechnungs-Import
+.. [x] Kontoumsatz-Import
+. [ ] Clean Code & Architektur-Audit durchführen.
+. [ ] Verifizieren, dass die gesamte Domänenlogik unabhängig von technischen Details bleibt.
