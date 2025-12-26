@@ -5,6 +5,7 @@ import at.hillstrom.energy.AdresseGeaendert
 import at.hillstrom.energy.Email
 import at.hillstrom.energy.EmailGeaendert
 import at.hillstrom.energy.MitgliedAngelegt
+import at.hillstrom.energy.MitgliedEvent
 import at.hillstrom.energy.MitgliedGeandertEvent
 import at.hillstrom.energy.MitgliedProperties
 import at.hillstrom.energy.Mitgliedsnummer
@@ -21,13 +22,24 @@ class Mitglied private constructor(
     var steuerklasse: Steuerklasse
 ) {
 
-    constructor(importiertEvent: MitgliedAngelegt) : this(importiertEvent.kundennummer, importiertEvent.name,
-        importiertEvent.adresse, importiertEvent.email, importiertEvent.steuerklasse)
+    constructor(importiertEvent: MitgliedAngelegt) : this(
+        importiertEvent.kundennummer, importiertEvent.name,
+        importiertEvent.adresse, importiertEvent.email, importiertEvent.steuerklasse
+    )
 
     companion object {
+        fun fromEvents(events: List<MitgliedEvent>): Mitglied {
+            val angelegtEvent = events.filterIsInstance<MitgliedAngelegt>().first()
+            val mitglied = Mitglied(angelegtEvent)
+            events.filterIsInstance<MitgliedGeandertEvent>().forEach { mitglied.apply(it) }
+            return mitglied
+        }
+
         fun erstelleMitglied(kundennummer: Mitgliedsnummer, properties: MitgliedProperties): MitgliedAngelegt {
-            return MitgliedAngelegt(kundennummer, properties.name, properties.adresse, properties.email,
-                properties.steuerklasse)
+            return MitgliedAngelegt(
+                kundennummer, properties.name, properties.adresse, properties.email,
+                properties.steuerklasse
+            )
         }
     }
 

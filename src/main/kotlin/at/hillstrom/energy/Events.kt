@@ -72,6 +72,17 @@ data class SteuerklasseGeaendert(
     val neueSteuerklasse: Steuerklasse
 ) : MitgliedGeandertEvent()
 
+// --- Import Events ---
+
+sealed class ImportEvent
+
+data class MitgliederImportErfolgreich(val zeitpunkt: java.time.Instant = java.time.Instant.now()) : ImportEvent()
+
+data class MitgliederImportFehlgeschlagen(
+    val fehler: String,
+    val zeitpunkt: java.time.Instant = java.time.Instant.now()
+) : ImportEvent()
+
 // --- Rechnung ---
 
 data class Rechnungsnummer(val wert: String)

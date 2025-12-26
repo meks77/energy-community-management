@@ -2,7 +2,7 @@
 
 == Phase 1: Fachliche Domäne & Use-Case Slices (Core)
 . [x] Definition erster Kern-Events (Mitglied angelegt, Rechnung erstellt, Umsatz importiert).
-. [ ] Use-Case "Import von Mitgliedern"
+. [x] Use-Case "Import von Mitgliedern" (inkl. Bulk-Import & Fehlerhandling)
 . [ ] Use-Case "Import von Rechnungen"
 . [ ] Use-Case "Import von Kontoumsätzen"
 . [ ] Use-Case "Zahlungs-Clearing": Spezifisches Modell und Logik zur Zuordnung von Zahlungen implementieren.
