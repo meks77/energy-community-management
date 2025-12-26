@@ -41,7 +41,7 @@ class MitgliederImportServiceTest {
         }
     }
 
-    private class ListSource(val items: List<Pair<Mitgliedsnummer, MitgliedProperties>>) : MitgliedImportSource {
+    private class ListSource(items: List<Pair<Mitgliedsnummer, MitgliedProperties>>) : MitgliedImportSource {
         private val iterator = items.iterator()
         override fun hasNext(): Boolean = iterator.hasNext()
         override fun next(): Pair<Mitgliedsnummer, MitgliedProperties> = iterator.next()
@@ -115,7 +115,7 @@ class MitgliederImportServiceTest {
     }
 
     @Test
-    fun `erzeugt keine Events wenn keine Änderung vorliegt`() {
+    fun `erzeugt keine Events wenn keine Aenderung vorliegt`() {
         val repo = MockRepository()
         val importRepo = MockImportRepository()
         val service = MitgliederImportService(repo, importRepo)

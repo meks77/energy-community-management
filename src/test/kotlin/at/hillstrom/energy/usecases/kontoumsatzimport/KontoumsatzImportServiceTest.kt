@@ -44,7 +44,7 @@ class KontoumsatzImportServiceTest {
         }
     }
 
-    private class ListSource(val items: List<KontoumsatzProperties>) : KontoumsatzImportSource {
+    private class ListSource(items: List<KontoumsatzProperties>) : KontoumsatzImportSource {
         private val iterator = items.iterator()
         override fun hasNext(): Boolean = iterator.hasNext()
         override fun next(): KontoumsatzProperties = iterator.next()

@@ -47,7 +47,7 @@ class RechnungsImportServiceTest {
         }
     }
 
-    private class ListSource(val items: List<RechnungProperties>) : RechnungImportSource {
+    private class ListSource(items: List<RechnungProperties>) : RechnungImportSource {
         private val iterator = items.iterator()
         override fun hasNext(): Boolean = iterator.hasNext()
         override fun next(): RechnungProperties = iterator.next()
