@@ -1,6 +1,6 @@
 package at.hillstrom.energy.domain.umsatz
 import at.hillstrom.energy.*
-import at.hillstrom.energy.usecases.kontoumsatzimport.Kontoumsatz
+import at.hillstrom.energy.usecases.importe.kontoumsatzimport.Kontoumsatz
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal

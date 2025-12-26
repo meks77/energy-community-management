@@ -1,15 +1,18 @@
-package at.hillstrom.energy.usecases.mitgliederimport
+package at.hillstrom.energy.usecases.importe.mitgliederimport
 
+import at.hillstrom.energy.usecases.importe.ImportRepository
+import at.hillstrom.energy.MitgliedEvent
 import at.hillstrom.energy.MitgliederImportErfolgreich
 import at.hillstrom.energy.MitgliederImportFehlgeschlagen
-import at.hillstrom.energy.MitgliedProperties
-import at.hillstrom.energy.Mitgliedsnummer
 
-class MitgliederImportService(private val repository: MitgliedRepository) {
+class MitgliederImportService(
+    private val repository: MitgliedRepository,
+    private val importRepository: ImportRepository
+) {
 
     fun importiere(source: MitgliedImportSource) {
         try {
-            val allNewEvents = mutableListOf<at.hillstrom.energy.MitgliedEvent>()
+            val allNewEvents = mutableListOf<MitgliedEvent>()
             while (source.hasNext()) {
                 val (kundennummer, properties) = source.next()
                 val existingEvents = repository.ladeEvents(kundennummer)
@@ -23,9 +26,9 @@ class MitgliederImportService(private val repository: MitgliedRepository) {
             }
             
             repository.speichereEvents(allNewEvents)
-            repository.speichereImportEvent(MitgliederImportErfolgreich())
+            importRepository.speichereImportEvent(MitgliederImportErfolgreich())
         } catch (e: Exception) {
-            repository.speichereImportEvent(MitgliederImportFehlgeschlagen(e.message ?: "Unbekannter Fehler"))
+            importRepository.speichereImportEvent(MitgliederImportFehlgeschlagen(e.message ?: "Unbekannter Fehler"))
             throw e
         }
     }

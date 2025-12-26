@@ -1,4 +1,4 @@
-package at.hillstrom.energy.usecases.mitgliederimport
+package at.hillstrom.energy.usecases.importe.mitgliederimport
 
 import at.hillstrom.energy.Adresse
 import at.hillstrom.energy.AdresseGeaendert

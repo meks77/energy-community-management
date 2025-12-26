@@ -1,4 +1,4 @@
-package at.hillstrom.energy.usecases.kontoumsatzimport
+package at.hillstrom.energy.usecases.importe.kontoumsatzimport
 
 import at.hillstrom.energy.Buchungsreferenz
 import at.hillstrom.energy.KontoumsatzImportiert

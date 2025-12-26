@@ -1,6 +1,6 @@
 package at.hillstrom.energy.domain.mitglied
 import at.hillstrom.energy.*
-import at.hillstrom.energy.usecases.mitgliederimport.Mitglied
+import at.hillstrom.energy.usecases.importe.mitgliederimport.Mitglied
 
 import kotlin.test.Test
 import kotlin.test.assertEquals

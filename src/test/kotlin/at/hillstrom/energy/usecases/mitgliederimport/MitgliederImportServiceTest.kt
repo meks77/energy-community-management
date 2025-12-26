@@ -1,6 +1,10 @@
 package at.hillstrom.energy.usecases.mitgliederimport
 
 import at.hillstrom.energy.*
+import at.hillstrom.energy.usecases.importe.ImportRepository
+import at.hillstrom.energy.usecases.importe.mitgliederimport.MitgliedImportSource
+import at.hillstrom.energy.usecases.importe.mitgliederimport.MitgliedRepository
+import at.hillstrom.energy.usecases.importe.mitgliederimport.MitgliederImportService
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -19,7 +23,6 @@ class MitgliederImportServiceTest {
     private class MockRepository : MitgliedRepository {
         val storedEvents = mutableListOf<MitgliedEvent>()
         val loadedEvents = mutableListOf<MitgliedEvent>()
-        val importEvents = mutableListOf<ImportEvent>()
 
         override fun ladeEvents(kundennummer: Mitgliedsnummer): List<MitgliedEvent> {
             return loadedEvents.filter { it.kundennummer == kundennummer }
@@ -29,7 +32,10 @@ class MitgliederImportServiceTest {
             storedEvents.addAll(events)
             loadedEvents.addAll(events)
         }
+    }
 
+    private class MockImportRepository : ImportRepository {
+        val importEvents = mutableListOf<ImportEvent>()
         override fun speichereImportEvent(event: ImportEvent) {
             importEvents.add(event)
         }
@@ -44,19 +50,21 @@ class MitgliederImportServiceTest {
     @Test
     fun `importiere verarbeitet Liste erfolgreich`() {
         val repo = MockRepository()
-        val service = MitgliederImportService(repo)
+        val importRepo = MockImportRepository()
+        val service = MitgliederImportService(repo, importRepo)
         val source = ListSource(listOf(kundennummer to properties))
 
         service.importiere(source)
 
         assertEquals(1, repo.storedEvents.size)
-        assertTrue(repo.importEvents.any { it is MitgliederImportErfolgreich })
+        assertTrue(importRepo.importEvents.any { it is MitgliederImportErfolgreich })
     }
 
     @Test
     fun `importiere speichert Fehler-Event bei Exception`() {
         val repo = MockRepository()
-        val service = MitgliederImportService(repo)
+        val importRepo = MockImportRepository()
+        val service = MitgliederImportService(repo, importRepo)
         val source = object : MitgliedImportSource {
             override fun hasNext() = true
             override fun next() = throw RuntimeException("Test-Fehler")
@@ -69,13 +77,14 @@ class MitgliederImportServiceTest {
         }
 
         assertEquals(0, repo.storedEvents.size)
-        assertTrue(repo.importEvents.any { it is MitgliederImportFehlgeschlagen && it.fehler == "Test-Fehler" })
+        assertTrue(importRepo.importEvents.any { it is MitgliederImportFehlgeschlagen && it.fehler == "Test-Fehler" })
     }
 
     @Test
     fun `importiert neues Mitglied`() {
         val repo = MockRepository()
-        val service = MitgliederImportService(repo)
+        val importRepo = MockImportRepository()
+        val service = MitgliederImportService(repo, importRepo)
         val source = ListSource(listOf(kundennummer to properties))
 
         service.importiere(source)
@@ -89,7 +98,8 @@ class MitgliederImportServiceTest {
     @Test
     fun `aktualisiert bestehendes Mitglied`() {
         val repo = MockRepository()
-        val service = MitgliederImportService(repo)
+        val importRepo = MockImportRepository()
+        val service = MitgliederImportService(repo, importRepo)
 
         // Zuerst anlegen
         service.importiere(ListSource(listOf(kundennummer to properties)))
@@ -107,7 +117,8 @@ class MitgliederImportServiceTest {
     @Test
     fun `erzeugt keine Events wenn keine Änderung vorliegt`() {
         val repo = MockRepository()
-        val service = MitgliederImportService(repo)
+        val importRepo = MockImportRepository()
+        val service = MitgliederImportService(repo, importRepo)
 
         // Zuerst anlegen
         service.importiere(ListSource(listOf(kundennummer to properties)))

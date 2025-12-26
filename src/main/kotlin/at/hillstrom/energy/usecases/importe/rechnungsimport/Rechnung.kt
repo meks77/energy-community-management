@@ -1,4 +1,4 @@
-package at.hillstrom.energy.usecases.rechnungsimport
+package at.hillstrom.energy.usecases.importe.rechnungsimport
 
 import at.hillstrom.energy.RechnungErstellt
 import at.hillstrom.energy.RechnungProperties
