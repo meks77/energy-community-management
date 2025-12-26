@@ -90,6 +90,13 @@ data class RechnungenImportFehlgeschlagen(
     val zeitpunkt: java.time.Instant = java.time.Instant.now()
 ) : ImportEvent()
 
+data class KontoumsaetzeImportErfolgreich(val zeitpunkt: java.time.Instant = java.time.Instant.now()) : ImportEvent()
+
+data class KontoumsaetzeImportFehlgeschlagen(
+    val fehler: String,
+    val zeitpunkt: java.time.Instant = java.time.Instant.now()
+) : ImportEvent()
+
 // --- Rechnung ---
 
 data class Rechnungsnummer(val wert: String)

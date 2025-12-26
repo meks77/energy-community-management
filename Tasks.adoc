@@ -4,7 +4,7 @@
 . [x] Definition erster Kern-Events (Mitglied angelegt, Rechnung erstellt, Umsatz importiert).
 . [x] Use-Case "Import von Mitgliedern" (inkl. Bulk-Import & Fehlerhandling)
 . [x] Use-Case "Import von Rechnungen"
-. [ ] Use-Case "Import von Kontoumsätzen"
+. [x] Use-Case "Import von Kontoumsätzen"
 . [ ] Use-Case "Zahlungs-Clearing": Spezifisches Modell und Logik zur Zuordnung von Zahlungen implementieren.
 . [ ] Use-Case "Umsatzsteuer-Ermittlung": Spezifisches Modell zur Aggregation von Einnahmen nach Steuersätzen implementieren.
 . [ ] Use-Case "Saldenliste": Spezifisches Modell für die Gewinn/Verlust-Übersicht implementieren.
