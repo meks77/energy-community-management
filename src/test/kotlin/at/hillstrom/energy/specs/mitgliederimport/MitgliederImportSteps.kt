@@ -6,8 +6,8 @@ import at.hillstrom.energy.usecases.importe.mitgliederimport.Mitglied
 import at.hillstrom.energy.usecases.importe.mitgliederimport.MitgliedImportSource
 import at.hillstrom.energy.usecases.importe.mitgliederimport.MitgliedRepository
 import at.hillstrom.energy.usecases.importe.mitgliederimport.MitgliederImportService
+import io.cucumber.java.de.Angenommen
 import io.cucumber.java.de.Dann
-import io.cucumber.java.de.Gegebenseien
 import io.cucumber.java.de.Wenn
 import kotlin.test.assertEquals
 
@@ -29,7 +29,7 @@ class MitgliederImportSteps {
         override fun speichereImportEvent(event: ImportEvent) {}
     }
 
-    @Gegebenseien("folgende bereits existierende Mitglieder:")
+    @Angenommen("folgende Mitglieder wurden bereits importiert:")
     fun seienFolgendeBereitsExistierendeMitglieder(rows: List<Map<String, String>>) {
         rows.forEach { row ->
             val kundennummer = Mitgliedsnummer(row["Kundennummer"]!!)
@@ -43,7 +43,7 @@ class MitgliederImportSteps {
         }
     }
 
-    @Gegebenseien("folgende Mitglieder in der Import-Quelle:")
+    @Angenommen("folgende Mitglieder sind in der Import-Quelle:")
     fun seienFolgendeMitgliederInDerImportQuelle(expectedRows: List<Map<String, String>>) {
         expectedRows.forEach { row ->
             membersInSource.add(MitgliedData(

@@ -101,11 +101,11 @@ data class KontoumsaetzeImportFehlgeschlagen(
 
 data class Rechnungsnummer(val wert: String)
 
-data class Nettobetrag(val wert: Betrag)
-data class Bruttobetrag(val wert: Betrag)
-data class Umsatzsteuer(val wert: Betrag)
-data class Rechnungsdatum(val wert: Datum)
-data class Faelligkeitsdatum(val wert: Datum)
+data class Nettobetrag(val betrag: Betrag)
+data class Bruttobetrag(val betrag: Betrag)
+data class Umsatzsteuer(val betrag: Betrag)
+data class Rechnungsdatum(val datum: Datum)
+data class Faelligkeitsdatum(val datum: Datum)
 
 enum class RechnungsSteuerklasse {
     PRIVAT,

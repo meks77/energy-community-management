@@ -2,10 +2,12 @@ package at.hillstrom.energy.specs.rechnungsimport
 
 import at.hillstrom.energy.*
 import at.hillstrom.energy.usecases.importe.ImportRepository
-import at.hillstrom.energy.usecases.importe.rechnungsimport.*
-import io.cucumber.java.de.Gegebenseien
-import io.cucumber.java.de.Wenn
+import at.hillstrom.energy.usecases.importe.rechnungsimport.RechnungImportSource
+import at.hillstrom.energy.usecases.importe.rechnungsimport.RechnungRepository
+import at.hillstrom.energy.usecases.importe.rechnungsimport.RechnungsImportService
+import io.cucumber.java.de.Angenommen
 import io.cucumber.java.de.Dann
+import io.cucumber.java.de.Wenn
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.*
@@ -29,7 +31,7 @@ class RechnungImportSteps {
         override fun speichereImportEvent(event: ImportEvent) {}
     }
 
-    @Gegebenseien("folgende Rechnungen in der Import-Quelle:")
+    @Angenommen("folgende Rechnungen sind in der Import-Quelle:")
     fun seienFolgendeRechnungenInDerImportQuelle(rows: List<Map<String, String>>) {
         rows.forEach { row ->
             val bruttobetrag = BigDecimal(row["Bruttobetrag"]!!)
@@ -73,8 +75,8 @@ class RechnungImportSteps {
             val actual = actualRechnungen[index]
             assertEquals(expected["Mitgliedsnummer"], actual.mitgliedsnummer.wert)
             assertEquals(expected["Rechnungsnummer"], actual.rechnungsnummer.wert)
-            assertEquals(expected["Datum"], actual.rechnungsdatum.wert.wert.toString())
-            assertEquals(BigDecimal(expected["Bruttobetrag"]!!), actual.bruttobetrag.wert.wert)
+            assertEquals(expected["Datum"], actual.rechnungsdatum.datum.wert.toString())
+            assertEquals(BigDecimal(expected["Bruttobetrag"]!!), actual.bruttobetrag.betrag.wert)
         }
     }
 }

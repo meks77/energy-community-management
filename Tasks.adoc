@@ -5,7 +5,7 @@
 . [x] Use-Case "Import von Mitgliedern" (inkl. Bulk-Import & Fehlerhandling)
 . [x] Use-Case "Import von Rechnungen"
 . [x] Use-Case "Import von Kontoumsätzen"
-. [ ] Use-Case "Automatisches Zahlungs-Clearing": Spezifisches Modell und Logik zur Zuordnung von Zahlungen implementieren.
+. [x] Use-Case "Automatisches Zahlungs-Clearing": Spezifisches Modell und Logik zur Zuordnung von Zahlungen implementieren.
 . [ ] Use-Case "Manuelles Zahlungs-Clearing": Spezifisches Modell und Logik zur manuellen Zuordnung von Zahlungen implementieren.
 . [ ] Use-Case "Umsatzsteuer-Ermittlung": Spezifisches Modell zur Aggregation von Einnahmen nach Steuersätzen implementieren.
 . [ ] Use-Case "Saldenliste": Spezifisches Modell für die Gewinn/Verlust-Übersicht implementieren.
@@ -32,5 +32,6 @@
 .. [x] Mitglieder-Import (neue, existierende, geänderte Mitglieder)
 .. [x] Rechnungs-Import
 .. [x] Kontoumsatz-Import
+.. [x] Zahlungs-Clearing(aktuell nur für automatisches Clearing)
 . [ ] Clean Code & Architektur-Audit durchführen.
 . [ ] Verifizieren, dass die gesamte Domänenlogik unabhängig von technischen Details bleibt.
