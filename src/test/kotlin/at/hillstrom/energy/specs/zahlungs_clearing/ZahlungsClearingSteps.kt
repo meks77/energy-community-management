@@ -4,6 +4,7 @@ import at.hillstrom.energy.*
 import at.hillstrom.energy.usecases.unbezahlterechnungen.UnbezahlteRechnung
 import at.hillstrom.energy.usecases.unbezahlterechnungen.UnbezahlteRechnungenRepository
 import at.hillstrom.energy.usecases.unbezahlterechnungen.ZahlungsClearingReadModel
+import at.hillstrom.energy.usecases.unbezahlterechnungen.ZahlungsMatcher
 import io.cucumber.java.de.Angenommen
 import io.cucumber.java.de.Dann
 import io.cucumber.java.de.Wenn
@@ -14,10 +15,12 @@ import java.time.LocalDate
 import java.util.*
 
 class ZahlungsClearingSteps {
-
+    
+    private val zahlungsMatcher = ZahlungsMatcher()
     private val repository = InMemoryUnbezahlteRechnungenRepository()
     private val readModel = ZahlungsClearingReadModel(repository)
     private var abfrageErgebnis: List<UnbezahlteRechnung> = emptyList()
+    private val geworfeneEvents = mutableListOf<ZahlungsClearingEvent>()
 
     @Angenommen("eine Rechnung {string} über {double} Euro wurde am {string} erstellt")
     @Wenn("eine Rechnung {string} über {double} Euro am {string} erstellt wird")
@@ -64,7 +67,7 @@ class ZahlungsClearingSteps {
                 mandatsId = null
             )
         )
-        readModel.handle(event)
+        handleKontoumsatz(event)
     }
 
     @Wenn("ein Kontoumsatz mit der Zahlungsreferenz {string} über {double} Euro importiert wird")
@@ -83,7 +86,20 @@ class ZahlungsClearingSteps {
                 mandatsId = null
             )
         )
-        readModel.handle(event)
+        handleKontoumsatz(event)
+    }
+
+    private fun handleKontoumsatz(event: KontoumsatzImportiert) {
+        val resultEvent = zahlungsMatcher.handle(event)
+        geworfeneEvents.add(resultEvent)
+        if (resultEvent is RechnungBeglichen) {
+            readModel.handle(resultEvent)
+        }
+    }
+
+    @Dann("wurde das Ereignis geworfen, dass die Zahlung nicht zugeordnet werden konnte")
+    fun wurde_das_ereignis_geworfen_dass_die_zahlung_nicht_zugeordnet_werden_konnte() {
+        assertTrue(geworfeneEvents.any { it is ZahlungNichtZugeordnet })
     }
 
     @Dann("ist die Liste der unbezahlten Rechnungen leer")

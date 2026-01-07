@@ -31,7 +31,7 @@ class ZahlungsClearingReadModelTest {
         val rechnungsnummer = Rechnungsnummer("RN_20251200000331")
         readModel.handle(erstelleRechnungEvent(rechnungsnummer))
         
-        readModel.handle(erstelleZahlungEvent(rechnungsnummer.wert))
+        readModel.handle(erstelleRechnungBeglichenEvent(rechnungsnummer))
 
         val unbezahlte = readModel.getUnbezahlteRechnungen(Rechnungsdatum(Datum(LocalDate.MIN)))
         assertTrue(unbezahlte.isEmpty())
@@ -41,7 +41,7 @@ class ZahlungsClearingReadModelTest {
     fun `Zahlung vor Rechnung markiert Rechnung sofort als bezahlt`() {
         val rechnungsnummer = Rechnungsnummer("RN_20251200000331")
         
-        readModel.handle(erstelleZahlungEvent(rechnungsnummer.wert))
+        readModel.handle(erstelleRechnungBeglichenEvent(rechnungsnummer))
         readModel.handle(erstelleRechnungEvent(rechnungsnummer))
 
         val unbezahlte = readModel.getUnbezahlteRechnungen(Rechnungsdatum(Datum(LocalDate.MIN)))
@@ -78,18 +78,10 @@ class ZahlungsClearingReadModelTest {
         )
     )
 
-    private fun erstelleZahlungEvent(verwendungszweck: String) = KontoumsatzImportiert(
+    private fun erstelleRechnungBeglichenEvent(rechnungsnummer: Rechnungsnummer) = RechnungBeglichen(
+        rechnungsnummer = rechnungsnummer,
         buchungsreferenz = Buchungsreferenz("REF123"),
-        properties = KontoumsatzProperties(
-            buchungsdatum = Buchungsdatum(Datum(LocalDate.now())),
-            partnername = Partnername("Max Mustermann"),
-            partnerIban = IBAN("AT123"),
-            betrag = Kontoumsatzbetrag(Betrag(BigDecimal("120"))),
-            buchungsdetails = Buchungsdetails(verwendungszweck),
-            buchungsreferenz = Buchungsreferenz("REF123"),
-            zahlungsreferenz = null,
-            mandatsId = null
-        )
+        beglichenAm = Datum(LocalDate.now())
     )
 
     class InMemoryUnbezahlteRechnungenRepository : UnbezahlteRechnungenRepository {

@@ -30,3 +30,7 @@ Funktionalität: Automatisches Zahlungs-Clearing
     Und eine Rechnung "RN_104" über 100.00 Euro wurde am "2023-02-01" erstellt
     Wenn ich die Liste der unbezahlten Rechnungen ab "2023-01-15" abfrage
     Dann enthält die Liste nur die Rechnung "RN_104"
+
+  Szenario: Eine Zahlung ohne Rechnungsbezug löst ein Event aus
+    Wenn ein Kontoumsatz mit dem Verwendungszweck "Unbekannte Zahlung" über 50.00 Euro importiert wird
+    Dann wurde das Ereignis geworfen, dass die Zahlung nicht zugeordnet werden konnte

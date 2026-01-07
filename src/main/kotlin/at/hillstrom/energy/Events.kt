@@ -142,6 +142,23 @@ data class RechnungErstellt(
     val properties: RechnungProperties
 ) : RechnungEvent()
 
+sealed class ZahlungsClearingEvent {
+    abstract val id: UUID
+}
+
+data class RechnungBeglichen(
+    override val id: UUID = UUID.randomUUID(),
+    val rechnungsnummer: Rechnungsnummer,
+    val buchungsreferenz: Buchungsreferenz,
+    val beglichenAm: Datum,
+) : ZahlungsClearingEvent()
+
+data class ZahlungNichtZugeordnet(
+    override val id: UUID = UUID.randomUUID(),
+    val buchungsreferenz: Buchungsreferenz,
+    val zeitpunkt: Datum,
+) : ZahlungsClearingEvent()
+
 // --- Kontoumsatz ---
 
 data class Partnername(val wert: String)
