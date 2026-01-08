@@ -1,10 +1,8 @@
 package at.hillstrom.energy.specs.rechnungsimport
 
 import at.hillstrom.energy.*
-import at.hillstrom.energy.usecases.importe.ImportRepository
+import at.hillstrom.energy.specs.SharedAppContext
 import at.hillstrom.energy.usecases.importe.rechnungsimport.RechnungImportSource
-import at.hillstrom.energy.usecases.importe.rechnungsimport.RechnungRepository
-import at.hillstrom.energy.usecases.importe.rechnungsimport.RechnungsImportService
 import io.cucumber.java.de.Angenommen
 import io.cucumber.java.de.Dann
 import io.cucumber.java.de.Wenn
@@ -13,23 +11,11 @@ import java.time.LocalDate
 import java.util.*
 import kotlin.test.assertEquals
 
-class RechnungImportSteps {
+class RechnungImportSteps(private val context: SharedAppContext) {
 
     private val rechnungenInSource = mutableListOf<RechnungProperties>()
 
-    private val repository = object : RechnungRepository {
-        val storage = mutableMapOf<UUID, MutableList<RechnungEvent>>()
-        override fun ladeEvents(id: UUID): List<RechnungEvent> = storage[id] ?: emptyList()
-        override fun speichereEvents(events: List<RechnungEvent>) {
-            events.forEach { event ->
-                storage.computeIfAbsent(event.id) { mutableListOf() }.add(event)
-            }
-        }
-    }
-
-    private val importRepository = object : ImportRepository {
-        override fun speichereImportEvent(event: ImportEvent) {}
-    }
+    private val app get() = context.app
 
     @Angenommen("folgende Rechnungen sind in der Import-Quelle:")
     fun seienFolgendeRechnungenInDerImportQuelle(rows: List<Map<String, String>>) {
@@ -58,13 +44,12 @@ class RechnungImportSteps {
             override fun hasNext(): Boolean = iterator.hasNext()
             override fun next(): RechnungProperties = iterator.next()
         }
-        val service = RechnungsImportService(repository, importRepository)
-        service.importiere(source)
+        app.rechnungsImportService.importiere(source)
     }
 
     @Dann("sind folgende Rechnungen im System vorhanden:")
     fun sind_folgende_rechnungen_im_system_vorhanden(expectedRows: List<Map<String, String>>) {
-        val actualRechnungen = repository.storage.values.flatten()
+        val actualRechnungen = context.getRechnungEvents()
             .filterIsInstance<RechnungErstellt>()
             .map { it.properties }
             .sortedBy { it.rechnungsnummer.wert }

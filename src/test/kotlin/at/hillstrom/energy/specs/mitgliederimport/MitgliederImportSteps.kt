@@ -1,33 +1,20 @@
 package at.hillstrom.energy.specs.mitgliederimport
 
 import at.hillstrom.energy.*
-import at.hillstrom.energy.usecases.importe.ImportRepository
+import at.hillstrom.energy.specs.SharedAppContext
 import at.hillstrom.energy.usecases.importe.mitgliederimport.Mitglied
 import at.hillstrom.energy.usecases.importe.mitgliederimport.MitgliedImportSource
-import at.hillstrom.energy.usecases.importe.mitgliederimport.MitgliedRepository
-import at.hillstrom.energy.usecases.importe.mitgliederimport.MitgliederImportService
 import io.cucumber.java.de.Angenommen
 import io.cucumber.java.de.Dann
 import io.cucumber.java.de.Wenn
 import kotlin.test.assertEquals
 
-class MitgliederImportSteps {
+class MitgliederImportSteps(private val context: SharedAppContext) {
 
     private val membersInSource = mutableListOf<MitgliedData>()
-    
-    private val repository = object : MitgliedRepository {
-        val storage = mutableMapOf<Mitgliedsnummer, MutableList<MitgliedEvent>>()
-        override fun ladeEvents(kundennummer: Mitgliedsnummer): List<MitgliedEvent> = storage[kundennummer] ?: emptyList()
-        override fun speichereEvents(events: List<MitgliedEvent>) {
-            events.forEach { event ->
-                storage.computeIfAbsent(event.kundennummer) { mutableListOf() }.add(event)
-            }
-        }
-    }
 
-    private val importRepository = object : ImportRepository {
-        override fun speichereImportEvent(event: ImportEvent) {}
-    }
+    private val repository get() = context.mitgliedRepository
+    private val app get() = context.app
 
     @Angenommen("folgende Mitglieder wurden bereits importiert:")
     fun seienFolgendeBereitsExistierendeMitglieder(rows: List<Map<String, String>>) {
@@ -69,13 +56,12 @@ class MitgliederImportSteps {
                 )
             }
         }
-        val service = MitgliederImportService(repository, importRepository)
-        service.importiere(source)
+        app.mitgliederImportService.importiere(source)
     }
 
     @Dann("sind folgende Mitglieder im System vorhanden:")
     fun sind_folgende_mitglieder_im_system_vorhanden(expectedRows: List<Map<String, String>>) {
-        val actualMembers = repository.storage.map { (nr, events) ->
+        val actualMembers = context.getMitgliederEvents().map { (nr, events) ->
             val mitglied = Mitglied.fromEvents(events)
             MitgliedData(nr.wert, mitglied.name.wert, mitglied.email.wert)
         }.sortedBy { it.kundennummer }

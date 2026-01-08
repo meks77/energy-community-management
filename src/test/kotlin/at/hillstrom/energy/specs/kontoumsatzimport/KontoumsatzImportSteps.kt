@@ -1,7 +1,7 @@
 package at.hillstrom.energy.specs.kontoumsatzimport
 
 import at.hillstrom.energy.*
-import at.hillstrom.energy.usecases.importe.ImportRepository
+import at.hillstrom.energy.specs.SharedAppContext
 import at.hillstrom.energy.usecases.importe.kontoumsatzimport.*
 import io.cucumber.java.de.Gegebenseien
 import io.cucumber.java.de.Wenn
@@ -10,23 +10,11 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import kotlin.test.assertEquals
 
-class KontoumsatzImportSteps {
+class KontoumsatzImportSteps(private val context: SharedAppContext) {
 
     private val umsaetzeInSource = mutableListOf<KontoumsatzProperties>()
 
-    private val repository = object : KontoumsatzRepository {
-        val storage = mutableMapOf<Buchungsreferenz, MutableList<KontoumsatzEvent>>()
-        override fun ladeEvents(buchungsreferenz: Buchungsreferenz): List<KontoumsatzEvent> = storage[buchungsreferenz] ?: emptyList()
-        override fun speichereEvents(events: List<KontoumsatzEvent>) {
-            events.forEach { event ->
-                storage.computeIfAbsent(event.buchungsreferenz) { mutableListOf() }.add(event)
-            }
-        }
-    }
-
-    private val importRepository = object : ImportRepository {
-        override fun speichereImportEvent(event: ImportEvent) {}
-    }
+    private val app get() = context.app
 
     @Gegebenseien("folgende Kontoumsätze in der Import-Quelle:")
     fun seienFolgendeKontoumsaetzeInDerImportQuelle(rows: List<Map<String, String>>) {
@@ -51,13 +39,12 @@ class KontoumsatzImportSteps {
             override fun hasNext(): Boolean = iterator.hasNext()
             override fun next(): KontoumsatzProperties = iterator.next()
         }
-        val service = KontoumsatzImportService(repository, importRepository)
-        service.importiere(source)
+        app.kontoumsatzImportService.importiere(source)
     }
 
     @Dann("sind folgende Kontoumsätze im System vorhanden:")
     fun sind_folgende_kontoumsaetze_im_system_vorhanden(expectedRows: List<Map<String, String>>) {
-        val actualUmsaetze = repository.storage.values.flatten()
+        val actualUmsaetze = context.getKontoumsatzEvents()
             .filterIsInstance<KontoumsatzImportiert>()
             .map { it.properties }
             .sortedBy { it.buchungsreferenz.wert }

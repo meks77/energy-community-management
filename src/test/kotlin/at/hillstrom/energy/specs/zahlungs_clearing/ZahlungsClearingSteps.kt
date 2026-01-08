@@ -1,10 +1,8 @@
 package at.hillstrom.energy.specs.zahlungs_clearing
 
 import at.hillstrom.energy.*
+import at.hillstrom.energy.specs.SharedAppContext
 import at.hillstrom.energy.usecases.unbezahlterechnungen.UnbezahlteRechnung
-import at.hillstrom.energy.usecases.unbezahlterechnungen.UnbezahlteRechnungenRepository
-import at.hillstrom.energy.usecases.unbezahlterechnungen.ZahlungsClearingReadModel
-import at.hillstrom.energy.usecases.unbezahlterechnungen.ZahlungsMatcher
 import io.cucumber.java.de.Angenommen
 import io.cucumber.java.de.Dann
 import io.cucumber.java.de.Wenn
@@ -14,11 +12,9 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.*
 
-class ZahlungsClearingSteps {
-    
-    private val zahlungsMatcher = ZahlungsMatcher()
-    private val repository = InMemoryUnbezahlteRechnungenRepository()
-    private val readModel = ZahlungsClearingReadModel(repository)
+class ZahlungsClearingSteps(private val context: SharedAppContext) {
+
+    private val app get() = context.app
     private var abfrageErgebnis: List<UnbezahlteRechnung> = emptyList()
     private val geworfeneEvents = mutableListOf<ZahlungsClearingEvent>()
 
@@ -38,12 +34,12 @@ class ZahlungsClearingSteps {
                 steuerklasse = RechnungsSteuerklasse.PRIVAT
             )
         )
-        readModel.handle(event)
+        app.zahlungsClearingReadModel.handle(event)
     }
 
     @Wenn("ich die Liste der unbezahlten Rechnungen ab {string} abfrage")
     fun ich_die_liste_der_unbezahlten_rechnungen_ab_abfrage(datum: String) {
-        abfrageErgebnis = readModel.getUnbezahlteRechnungen(Rechnungsdatum(Datum(LocalDate.parse(datum))))
+        abfrageErgebnis = app.zahlungsClearingReadModel.getUnbezahlteRechnungen(Rechnungsdatum(Datum(LocalDate.parse(datum))))
     }
 
     @Dann("enthält die Liste die Rechnung {string}")
@@ -90,10 +86,10 @@ class ZahlungsClearingSteps {
     }
 
     private fun handleKontoumsatz(event: KontoumsatzImportiert) {
-        val resultEvent = zahlungsMatcher.handle(event)
+        val resultEvent = app.zahlungsMatcher.handle(event)
         geworfeneEvents.add(resultEvent)
         if (resultEvent is RechnungBeglichen) {
-            readModel.handle(resultEvent)
+            app.zahlungsClearingReadModel.handle(resultEvent)
         }
     }
 
@@ -111,30 +107,5 @@ class ZahlungsClearingSteps {
     fun enthaelt_die_liste_nur_die_rechnung(nr: String) {
         assertEquals(1, abfrageErgebnis.size)
         assertEquals(nr, abfrageErgebnis[0].rechnungsnummer.wert)
-    }
-
-    class InMemoryUnbezahlteRechnungenRepository : UnbezahlteRechnungenRepository {
-        private val rechnungen = mutableMapOf<Rechnungsnummer, UnbezahlteRechnung>()
-        private val vorabBezahlt = mutableSetOf<Rechnungsnummer>()
-
-        override fun save(rechnung: UnbezahlteRechnung) {
-            rechnungen[rechnung.rechnungsnummer] = rechnung
-        }
-
-        override fun findByRechnungsnummer(rechnungsnummer: Rechnungsnummer): UnbezahlteRechnung? {
-            return rechnungen[rechnungsnummer]
-        }
-
-        override fun findUnbezahlteAb(datum: Rechnungsdatum): List<UnbezahlteRechnung> {
-            return rechnungen.values.filter { it.rechnungsdatum.datum.wert >= datum.datum.wert }
-        }
-
-        override fun markiereAlsBezahlt(rechnungsnummer: Rechnungsnummer) {
-            vorabBezahlt.add(rechnungsnummer)
-        }
-
-        override fun istAlsBezahltMarkiert(rechnungsnummer: Rechnungsnummer): Boolean {
-            return vorabBezahlt.contains(rechnungsnummer)
-        }
     }
 }
