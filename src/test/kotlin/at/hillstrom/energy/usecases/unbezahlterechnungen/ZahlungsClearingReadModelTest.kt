@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
-import java.util.*
 
 class ZahlungsClearingReadModelTest {
 
@@ -65,7 +64,7 @@ class ZahlungsClearingReadModelTest {
         rechnungsnummer: Rechnungsnummer, 
         datum: LocalDate = LocalDate.now()
     ) = RechnungErstellt(
-        id = UUID.randomUUID(),
+        id = rechnungsnummer,
         properties = RechnungProperties(
             mitgliedsnummer = Mitgliedsnummer("M1"),
             nettobetrag = Nettobetrag(Betrag(BigDecimal("100"))),

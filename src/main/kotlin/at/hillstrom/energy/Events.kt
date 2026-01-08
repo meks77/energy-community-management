@@ -133,14 +133,10 @@ data class RechnungProperties(
     val steuerklasse: RechnungsSteuerklasse
 )
 
-sealed class RechnungEvent {
-    abstract val id: UUID
-}
-
 data class RechnungErstellt(
-    override val id: UUID,
+    val id: Rechnungsnummer,
     val properties: RechnungProperties
-) : RechnungEvent()
+)
 
 sealed class ZahlungsClearingEvent {
     abstract val id: UUID

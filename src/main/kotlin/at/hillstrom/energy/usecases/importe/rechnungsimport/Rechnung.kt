@@ -2,11 +2,10 @@ package at.hillstrom.energy.usecases.importe.rechnungsimport
 
 import at.hillstrom.energy.RechnungErstellt
 import at.hillstrom.energy.RechnungProperties
-import java.nio.charset.StandardCharsets
-import java.util.UUID
+import at.hillstrom.energy.Rechnungsnummer
 
 class Rechnung private constructor(
-    val id: UUID,
+    val id: Rechnungsnummer,
     val properties: RechnungProperties
 ) {
 
@@ -20,14 +19,7 @@ class Rechnung private constructor(
 
     companion object {
         fun erstelleRechnung(properties: RechnungProperties): RechnungErstellt {
-            val id = generiereId(properties)
-            return RechnungErstellt(id, properties)
-        }
-
-        private fun generiereId(properties: RechnungProperties): UUID {
-            // Logisch ist die Rechnung aufgrund der Mitgliedsnummer, dem Rechnungsdatum und dem Rechnungsbetrag identifizierbar
-            val identifier = "${properties.mitgliedsnummer.wert}|${properties.rechnungsdatum.datum.wert}|${properties.bruttobetrag.betrag.wert}"
-            return UUID.nameUUIDFromBytes(identifier.toByteArray(StandardCharsets.UTF_8))
+            return RechnungErstellt(properties.rechnungsnummer, properties)
         }
     }
 }

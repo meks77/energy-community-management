@@ -2,7 +2,6 @@ package at.hillstrom.energy.usecases.importe.rechnungsimport
 
 import at.hillstrom.energy.usecases.importe.ImportRepository
 import at.hillstrom.energy.RechnungErstellt
-import at.hillstrom.energy.RechnungEvent
 import at.hillstrom.energy.RechnungenImportErfolgreich
 import at.hillstrom.energy.RechnungenImportFehlgeschlagen
 
@@ -13,16 +12,16 @@ class RechnungsImportService(
 
     fun importiere(source: RechnungImportSource) {
         try {
-            val allNewEvents = mutableListOf<RechnungEvent>()
+            val allNewEvents = mutableListOf<RechnungErstellt>()
             while (source.hasNext()) {
                 val properties = source.next()
                 val id = Rechnung.erstelleRechnung(properties).id
-                val existingEvents = repository.ladeEvents(id)
+                val existingEvent = repository.finde(id)
                 
-                if (existingEvents.isEmpty()) {
+                if (existingEvent == null) {
                     allNewEvents.add(Rechnung.erstelleRechnung(properties))
                 } else {
-                    val rechnung = Rechnung(existingEvents.filterIsInstance<RechnungErstellt>().first())
+                    val rechnung = Rechnung(existingEvent)
                     rechnung.validiereGleichheit(properties)
                 }
             }

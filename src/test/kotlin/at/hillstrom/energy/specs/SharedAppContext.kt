@@ -6,9 +6,8 @@ import at.hillstrom.energy.usecases.importe.kontoumsatzimport.KontoumsatzReposit
 import at.hillstrom.energy.usecases.importe.mitgliederimport.MitgliedRepository
 import at.hillstrom.energy.usecases.importe.rechnungsimport.RechnungRepository
 import at.hillstrom.energy.usecases.unbezahlterechnungen.UnbezahlteRechnung
-import at.hillstrom.energy.usecases.unbezahlterechnungen.UnbezahlteRechnungenRepository as UnbezahlteRechnungenRepositoryInterface
 import io.cucumber.java.Before
-import java.util.*
+import at.hillstrom.energy.usecases.unbezahlterechnungen.UnbezahlteRechnungenRepository as UnbezahlteRechnungenRepositoryInterface
 
 class SharedAppContext {
     private val _mitgliedRepository = InMemoryMitgliedRepository()
@@ -37,7 +36,7 @@ class SharedAppContext {
 
     // Helfer für Assertions in den Steps
     fun getMitgliederEvents(): Map<Mitgliedsnummer, List<MitgliedEvent>> = _mitgliedRepository.storage
-    fun getRechnungEvents(): List<RechnungEvent> = _rechnungRepository.storage.values.flatten()
+    fun getRechnungEvents(): List<RechnungErstellt> = _rechnungRepository.storage.values.flatten()
     fun getKontoumsatzEvents(): List<KontoumsatzEvent> = _kontoumsatzRepository.storage.values.flatten()
 }
 
@@ -52,9 +51,9 @@ private class InMemoryMitgliedRepository : MitgliedRepository {
 }
 
 private class InMemoryRechnungRepository : RechnungRepository {
-    val storage = mutableMapOf<UUID, MutableList<RechnungEvent>>()
-    override fun ladeEvents(id: UUID): List<RechnungEvent> = storage[id] ?: emptyList()
-    override fun speichereEvents(events: List<RechnungEvent>) {
+    val storage = mutableMapOf<Rechnungsnummer, MutableList<RechnungErstellt>>()
+    override fun finde(id: Rechnungsnummer): RechnungErstellt? = storage[id]?.firstOrNull()
+    override fun speichereEvents(events: List<RechnungErstellt>) {
         events.forEach { event ->
             storage.computeIfAbsent(event.id) { mutableListOf() }.add(event)
         }

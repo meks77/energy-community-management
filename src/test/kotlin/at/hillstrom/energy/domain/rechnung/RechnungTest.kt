@@ -31,20 +31,25 @@ class RechnungTest {
         val event2 = Rechnung.erstelleRechnung(properties)
         assertEquals(event.id, event2.id)
 
-        // Verifiziere unterschiedliche ID bei anderem Betrag
+        // Verifiziere gleiche ID bei anderem Betrag (da Rechnungsnummer gleich bleibt)
         val properties2 = properties.copy(bruttobetrag = Bruttobetrag(Betrag(BigDecimal("121.00"))))
         val event3 = Rechnung.erstelleRechnung(properties2)
-        assertNotEquals(event.id, event3.id)
+        assertEquals(event.id, event3.id)
 
-        // Verifiziere unterschiedliche ID bei anderem Datum
+        // Verifiziere gleiche ID bei anderem Datum (da Rechnungsnummer gleich bleibt)
         val properties3 = properties.copy(rechnungsdatum = Rechnungsdatum(Datum(LocalDate.of(2023, 12, 24))))
         val event4 = Rechnung.erstelleRechnung(properties3)
-        assertNotEquals(event.id, event4.id)
+        assertEquals(event.id, event4.id)
 
-        // Verifiziere unterschiedliche ID bei anderer Mitgliedsnummer
+        // Verifiziere gleiche ID bei anderer Mitgliedsnummer (da Rechnungsnummer gleich bleibt)
         val properties4 = properties.copy(mitgliedsnummer = Mitgliedsnummer("M124"))
         val event5 = Rechnung.erstelleRechnung(properties4)
-        assertNotEquals(event.id, event5.id)
+        assertEquals(event.id, event5.id)
+
+        // Verifiziere unterschiedliche ID bei anderer Rechnungsnummer
+        val properties5 = properties.copy(rechnungsnummer = Rechnungsnummer("R-2023-002"))
+        val event6 = Rechnung.erstelleRechnung(properties5)
+        assertNotEquals(event.id, event6.id)
     }
 
     @Test
@@ -76,9 +81,9 @@ class RechnungTest {
     fun `wirft Fehler wenn Rechnung mit gleicher ID aber abweichenden Werten erstellt wird`() {
         val properties = RechnungProperties(
             mitgliedsnummer = Mitgliedsnummer("M123"),
-            nettobetrag = Nettobetrag(Betrag(BigDecimal("100.00"))),
-            bruttobetrag = Bruttobetrag(Betrag(BigDecimal("120.00"))),
-            umsatzsteuer = Umsatzsteuer(Betrag(BigDecimal("20.00"))),
+            nettobetrag = Nettobetrag(Betrag(BigDecimal(100.00))),
+            bruttobetrag = Bruttobetrag(Betrag(BigDecimal(120.00))),
+            umsatzsteuer = Umsatzsteuer(Betrag(BigDecimal(20.00))),
             rechnungsnummer = Rechnungsnummer("R-2023-001"),
             rechnungsdatum = Rechnungsdatum(Datum(LocalDate.of(2023, 12, 23))),
             faelligkeitsdatum = Faelligkeitsdatum(Datum(LocalDate.of(2024, 1, 23))),
@@ -88,14 +93,19 @@ class RechnungTest {
         val event = Rechnung.erstelleRechnung(properties)
         val rechnung = Rechnung(event)
 
-        // Abweichende Rechnungsnummer (nicht Teil der ID-Generierung)
-        val abweichendeProperties = properties.copy(rechnungsnummer = Rechnungsnummer("R-2023-002"))
-        
-        val neuesEvent = Rechnung.erstelleRechnung(abweichendeProperties)
-        assertEquals(rechnung.id, neuesEvent.id, "ID muss gleich sein, da Mitglied, Datum und Bruttobetrag gleich sind")
+        assertExceptionBeiValidiereGleichheit(rechnung, properties.copy(mitgliedsnummer = Mitgliedsnummer("M124")))
+        assertExceptionBeiValidiereGleichheit(rechnung, properties.copy(nettobetrag = Nettobetrag(Betrag(BigDecimal(101.0)))))
+        assertExceptionBeiValidiereGleichheit(rechnung, properties.copy(bruttobetrag = Bruttobetrag(Betrag(BigDecimal(121.0)))))
+        assertExceptionBeiValidiereGleichheit(rechnung, properties.copy(umsatzsteuer = Umsatzsteuer(Betrag(BigDecimal(21.0)))))
+        assertExceptionBeiValidiereGleichheit(rechnung, properties.copy(rechnungsdatum = Rechnungsdatum(Datum(LocalDate.of(2023, 12, 22)))))
+        assertExceptionBeiValidiereGleichheit(rechnung, properties.copy(faelligkeitsdatum = Faelligkeitsdatum(Datum(LocalDate.of(2024, 1, 24)))))
+        assertExceptionBeiValidiereGleichheit(rechnung, properties.copy(steuerklasse = RechnungsSteuerklasse.PRIVAT))
+    }
 
+    private fun assertExceptionBeiValidiereGleichheit(rechnung: Rechnung,
+                          abweichendeProperties: RechnungProperties) {
         assertThrows(IllegalArgumentException::class.java) {
-            rechnung.validiereGleichheit(neuesEvent.properties)
+            rechnung.validiereGleichheit(abweichendeProperties)
         }
     }
 

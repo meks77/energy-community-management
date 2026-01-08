@@ -22,7 +22,7 @@ class ZahlungsClearingSteps(private val context: SharedAppContext) {
     @Wenn("eine Rechnung {string} über {double} Euro am {string} erstellt wird")
     fun eine_rechnung_ueber_euro_wurde_am_erstellt(nr: String, betrag: Double, datum: String) {
         val event = RechnungErstellt(
-            id = UUID.randomUUID(),
+            id = Rechnungsnummer(nr),
             properties = RechnungProperties(
                 mitgliedsnummer = Mitgliedsnummer("M1"),
                 nettobetrag = Nettobetrag(Betrag(BigDecimal.valueOf(betrag))), // Vereinfacht

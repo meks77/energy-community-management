@@ -7,7 +7,6 @@ import at.hillstrom.energy.usecases.importe.rechnungsimport.RechnungRepository
 import at.hillstrom.energy.usecases.unbezahlterechnungen.UnbezahlteRechnung
 import at.hillstrom.energy.usecases.unbezahlterechnungen.UnbezahlteRechnungenRepository
 import org.junit.jupiter.api.Test
-import java.util.*
 import kotlin.test.assertNotNull
 
 class AppTest {
@@ -19,8 +18,8 @@ class AppTest {
             override fun speichereEvents(events: List<MitgliedEvent>) {}
         }
         val rechnungRepository = object : RechnungRepository {
-            override fun ladeEvents(id: UUID): List<RechnungEvent> = emptyList()
-            override fun speichereEvents(events: List<RechnungEvent>) {}
+            override fun finde(id: Rechnungsnummer): RechnungErstellt? = null
+            override fun speichereEvents(events: List<RechnungErstellt>) {}
         }
         val kontoumsatzRepository = object : KontoumsatzRepository {
             override fun ladeEvents(buchungsreferenz: Buchungsreferenz): List<KontoumsatzEvent> = emptyList()

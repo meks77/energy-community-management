@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.math.BigDecimal
 import java.time.LocalDate
-import java.util.UUID
 
 class RechnungsImportServiceTest {
 
@@ -27,14 +26,14 @@ class RechnungsImportServiceTest {
     )
 
     private class MockRepository : RechnungRepository {
-        val storedEvents = mutableListOf<RechnungEvent>()
-        val loadedEvents = mutableListOf<RechnungEvent>()
+        val storedEvents = mutableListOf<RechnungErstellt>()
+        val loadedEvents = mutableListOf<RechnungErstellt>()
 
-        override fun ladeEvents(id: UUID): List<RechnungEvent> {
-            return loadedEvents.filter { it.id == id }
+        override fun finde(id: Rechnungsnummer): RechnungErstellt? {
+            return loadedEvents.find { it.id == id }
         }
 
-        override fun speichereEvents(events: List<RechnungEvent>) {
+        override fun speichereEvents(events: List<RechnungErstellt>) {
             storedEvents.addAll(events)
             loadedEvents.addAll(events)
         }
@@ -94,7 +93,7 @@ class RechnungsImportServiceTest {
         service.importiere(source)
 
         assertEquals(1, repo.storedEvents.size)
-        val event = repo.storedEvents[0] as RechnungErstellt
+        val event = repo.storedEvents[0]
         assertEquals(properties, event.properties)
     }
 
@@ -120,13 +119,11 @@ class RechnungsImportServiceTest {
         val importRepo = MockImportRepository()
         val service = RechnungsImportService(repo, importRepo)
 
-        // Zuerst importieren
+        // Erster Import, welcher die Rechnung "anlegt"
         service.importiere(ListSource(listOf(properties)))
-        repo.storedEvents.clear()
 
-        // Abweichende Rechnungsnummer (ID bleibt gleich)
-        val abweichendeProperties = properties.copy(rechnungsnummer = Rechnungsnummer("R-999"))
-        
+        val abweichendeProperties = properties.copy(bruttobetrag = Bruttobetrag(Betrag(BigDecimal(121.0))))
+        // Erneuter Import derselben Rechnung mit abweichenden Daten
         assertThrows<IllegalArgumentException> {
             service.importiere(ListSource(listOf(abweichendeProperties)))
         }
