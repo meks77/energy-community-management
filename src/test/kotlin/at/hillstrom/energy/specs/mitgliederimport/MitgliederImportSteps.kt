@@ -26,7 +26,7 @@ class MitgliederImportSteps(private val context: SharedAppContext) {
                 Email(row["E-Mail"]!!),
                 Steuerklasse.PRIVAT
             )
-            repository.speichereEvents(listOf(Mitglied.erstelleMitglied(kundennummer, properties)))
+            repository.speichereEvents(listOf(Mitglied.erstelleMitglied(kundennummer, properties, app.sequenceGenerator.nextSequence())))
         }
     }
 

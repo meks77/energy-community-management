@@ -52,11 +52,16 @@ class RechnungsImportServiceTest {
         override fun next(): RechnungProperties = iterator.next()
     }
 
+    private class SimpleEventSequenceGenerator(initialValue: Long = 0) : EventSequenceGenerator {
+        private var lastSequence = initialValue
+        override fun nextSequence(): Long = ++lastSequence
+    }
+
     @Test
     fun `importiere verarbeitet Liste erfolgreich`() {
         val repo = MockRepository()
         val importRepo = MockImportRepository()
-        val service = RechnungsImportService(repo, importRepo)
+        val service = RechnungsImportService(repo, importRepo, SimpleEventSequenceGenerator())
         val source = ListSource(listOf(properties))
 
         service.importiere(source)
@@ -69,7 +74,7 @@ class RechnungsImportServiceTest {
     fun `importiere speichert Fehler-Event bei Exception`() {
         val repo = MockRepository()
         val importRepo = MockImportRepository()
-        val service = RechnungsImportService(repo, importRepo)
+        val service = RechnungsImportService(repo, importRepo, SimpleEventSequenceGenerator())
         val source = object : RechnungImportSource {
             override fun hasNext() = true
             override fun next() = throw RuntimeException("Test-Fehler")
@@ -87,7 +92,7 @@ class RechnungsImportServiceTest {
     fun `importiert neue Rechnung`() {
         val repo = MockRepository()
         val importRepo = MockImportRepository()
-        val service = RechnungsImportService(repo, importRepo)
+        val service = RechnungsImportService(repo, importRepo, SimpleEventSequenceGenerator())
         val source = ListSource(listOf(properties))
 
         service.importiere(source)
@@ -101,7 +106,7 @@ class RechnungsImportServiceTest {
     fun `erkennt Duplikate und importiert nicht erneut`() {
         val repo = MockRepository()
         val importRepo = MockImportRepository()
-        val service = RechnungsImportService(repo, importRepo)
+        val service = RechnungsImportService(repo, importRepo, SimpleEventSequenceGenerator())
 
         // Zuerst importieren
         service.importiere(ListSource(listOf(properties)))
@@ -117,12 +122,12 @@ class RechnungsImportServiceTest {
     fun `wirft Fehler bei abweichenden Daten fuer gleiche ID`() {
         val repo = MockRepository()
         val importRepo = MockImportRepository()
-        val service = RechnungsImportService(repo, importRepo)
+        val service = RechnungsImportService(repo, importRepo, SimpleEventSequenceGenerator())
 
         // Erster Import, welcher die Rechnung "anlegt"
         service.importiere(ListSource(listOf(properties)))
 
-        val abweichendeProperties = properties.copy(bruttobetrag = Bruttobetrag(Betrag(BigDecimal(121.0))))
+        val abweichendeProperties = properties.copy(bruttobetrag = Bruttobetrag(Betrag(BigDecimal("121.00"))))
         // Erneuter Import derselben Rechnung mit abweichenden Daten
         assertThrows<IllegalArgumentException> {
             service.importiere(ListSource(listOf(abweichendeProperties)))

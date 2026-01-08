@@ -9,6 +9,8 @@ import java.time.LocalDate
 
 class ZahlungsClearingReadModelTest {
 
+    private var seq = 0L
+    private fun nextSeq() = ++seq
     private val repository = InMemoryUnbezahlteRechnungenRepository()
     private val readModel = ZahlungsClearingReadModel(repository)
 
@@ -74,13 +76,15 @@ class ZahlungsClearingReadModelTest {
             rechnungsdatum = Rechnungsdatum(Datum(datum)),
             faelligkeitsdatum = Faelligkeitsdatum(Datum(datum.plusDays(14))),
             steuerklasse = RechnungsSteuerklasse.PRIVAT
-        )
+        ),
+        sequenznummer = nextSeq()
     )
 
     private fun erstelleRechnungBeglichenEvent(rechnungsnummer: Rechnungsnummer) = RechnungBeglichen(
         rechnungsnummer = rechnungsnummer,
         buchungsreferenz = Buchungsreferenz("REF123"),
-        beglichenAm = Datum(LocalDate.now())
+        beglichenAm = Datum(LocalDate.now()),
+        sequenznummer = nextSeq()
     )
 
     class InMemoryUnbezahlteRechnungenRepository : UnbezahlteRechnungenRepository {

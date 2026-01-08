@@ -5,10 +5,12 @@ import at.hillstrom.energy.KontoumsatzImportiert
 import at.hillstrom.energy.KontoumsaetzeImportErfolgreich
 import at.hillstrom.energy.KontoumsaetzeImportFehlgeschlagen
 import at.hillstrom.energy.usecases.importe.ImportRepository
+import at.hillstrom.energy.EventSequenceGenerator
 
 class KontoumsatzImportService(
     private val repository: KontoumsatzRepository,
-    private val importRepository: ImportRepository
+    private val importRepository: ImportRepository,
+    private val sequenceGenerator: EventSequenceGenerator
 ) {
 
     fun importiere(source: KontoumsatzImportSource) {
@@ -19,7 +21,7 @@ class KontoumsatzImportService(
                 val existingEvents = repository.ladeEvents(properties.buchungsreferenz)
 
                 if (existingEvents.isEmpty()) {
-                    allNewEvents.add(Kontoumsatz.importiereUmsatz(properties))
+                    allNewEvents.add(Kontoumsatz.importiereUmsatz(properties, sequenceGenerator.nextSequence()))
                 } else {
                     val umsatz = Kontoumsatz(existingEvents.filterIsInstance<KontoumsatzImportiert>().first())
                     umsatz.validiereGleichheit(properties)
@@ -27,9 +29,9 @@ class KontoumsatzImportService(
             }
 
             repository.speichereEvents(allNewEvents)
-            importRepository.speichereImportEvent(KontoumsaetzeImportErfolgreich())
+            importRepository.speichereImportEvent(KontoumsaetzeImportErfolgreich(sequenznummer = sequenceGenerator.nextSequence()))
         } catch (e: Exception) {
-            importRepository.speichereImportEvent(KontoumsaetzeImportFehlgeschlagen(e.message ?: "Unbekannter Fehler"))
+            importRepository.speichereImportEvent(KontoumsaetzeImportFehlgeschlagen(e.message ?: "Unbekannter Fehler", sequenznummer = sequenceGenerator.nextSequence()))
             throw e
         }
     }

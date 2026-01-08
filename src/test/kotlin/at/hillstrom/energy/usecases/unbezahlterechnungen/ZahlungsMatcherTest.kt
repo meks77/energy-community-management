@@ -8,8 +8,12 @@ import java.math.BigDecimal
 import java.time.LocalDate
 
 class ZahlungsMatcherTest {
-
-    private val matcher = ZahlungsMatcher()
+    
+    private val generator = object : EventSequenceGenerator {
+        private var lastSequence = 0L
+        override fun nextSequence(): Long = ++lastSequence
+    }
+    private val matcher = ZahlungsMatcher(generator)
 
     @Test
     fun `erkennt Rechnungsnummer aus Zahlungsreferenz`() {
@@ -55,6 +59,7 @@ class ZahlungsMatcherTest {
             buchungsreferenz = Buchungsreferenz("REF123"),
             zahlungsreferenz = zahlungsreferenz?.let { Zahlungsreferenz(it) },
             mandatsId = null
-        )
+        ),
+        sequenznummer = generator.nextSequence()
     )
 }

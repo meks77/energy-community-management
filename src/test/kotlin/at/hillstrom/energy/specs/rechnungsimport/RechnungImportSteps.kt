@@ -35,7 +35,7 @@ class RechnungImportSteps(private val context: SharedAppContext) {
                 Faelligkeitsdatum(datum),
                 steuerklasse
             )
-            app.rechnungRepository.speichereEvents(listOf(Rechnung.erstelleRechnung(properties)))
+            app.rechnungRepository.speichereEvents(listOf(Rechnung.erstelleRechnung(properties, app.sequenceGenerator.nextSequence())))
         }
     }
 

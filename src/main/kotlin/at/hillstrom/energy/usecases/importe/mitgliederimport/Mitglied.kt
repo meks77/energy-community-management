@@ -35,32 +35,32 @@ class Mitglied private constructor(
             return mitglied
         }
 
-        fun erstelleMitglied(kundennummer: Mitgliedsnummer, properties: MitgliedProperties): MitgliedAngelegt {
+        fun erstelleMitglied(kundennummer: Mitgliedsnummer, properties: MitgliedProperties, sequenznummer: Long): MitgliedAngelegt {
             return MitgliedAngelegt(
                 kundennummer, properties.name, properties.adresse, properties.email,
-                properties.steuerklasse
+                properties.steuerklasse, sequenznummer
             )
         }
     }
 
 
-    fun aktualisiereMitglied(neueProperties: MitgliedProperties): List<MitgliedGeandertEvent> {
+    fun aktualisiereMitglied(neueProperties: MitgliedProperties, nextSequenceNumber: () -> Long): List<MitgliedGeandertEvent> {
         val events = mutableListOf<MitgliedGeandertEvent>()
 
         if (name != neueProperties.name) {
-            events.add(NameGeaendert(kundennummer, neueProperties.name))
+            events.add(NameGeaendert(kundennummer, neueProperties.name, nextSequenceNumber()))
         }
 
         if (adresse != neueProperties.adresse) {
-            events.add(AdresseGeaendert(kundennummer, neueProperties.adresse))
+            events.add(AdresseGeaendert(kundennummer, neueProperties.adresse, nextSequenceNumber()))
         }
 
         if (email != neueProperties.email) {
-            events.add(EmailGeaendert(kundennummer, neueProperties.email))
+            events.add(EmailGeaendert(kundennummer, neueProperties.email, nextSequenceNumber()))
         }
 
         if (steuerklasse != neueProperties.steuerklasse) {
-            events.add(SteuerklasseGeaendert(kundennummer, neueProperties.steuerklasse))
+            events.add(SteuerklasseGeaendert(kundennummer, neueProperties.steuerklasse, nextSequenceNumber()))
         }
 
         return events

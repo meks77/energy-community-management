@@ -24,3 +24,8 @@ interface UnbezahlteRechnungenRepository {
     fun markiereAlsBezahlt(rechnungsnummer: Rechnungsnummer)
     fun istAlsBezahltMarkiert(rechnungsnummer: Rechnungsnummer): Boolean
 }
+
+interface ProcessedEventRepository {
+    fun saveLastProcessedSequence(sequence: Long)
+    fun getLastProcessedSequence(): Long
+}

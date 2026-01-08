@@ -8,6 +8,9 @@ import kotlin.test.assertTrue
 
 class MitgliedTest {
     
+    private var seq = 0L
+    private fun nextSeq() = ++seq
+
     private val kundennummer = Mitgliedsnummer("K12345")
     private val initialAdresse = Adresse(Strasse("Musterstraße"), Hausnummer("1"), PLZ("1234"), Ort("Musterstadt"))
     private val initialProperties = MitgliedProperties(
@@ -19,7 +22,7 @@ class MitgliedTest {
 
     @Test
     fun `beim ersten Import wird MitgliedAngelegt Event erzeugt`() {
-        val event = Mitglied.erstelleMitglied(kundennummer, initialProperties)
+        val event = Mitglied.erstelleMitglied(kundennummer, initialProperties, nextSeq())
 
         assertEquals(kundennummer, event.kundennummer)
         assertEquals(initialProperties.name, event.name)
@@ -30,7 +33,7 @@ class MitgliedTest {
 
     @Test
     fun `wenn sich Eigenschaften aendern, werden entsprechende Events erzeugt`() {
-        val event = Mitglied.erstelleMitglied(kundennummer, initialProperties)
+        val event = Mitglied.erstelleMitglied(kundennummer, initialProperties, nextSeq())
         val mitglied = Mitglied(event)
 
         val neueAdresse = initialAdresse.copy(strasse = Strasse("Neue Straße"))
@@ -41,7 +44,7 @@ class MitgliedTest {
             steuerklasse = Steuerklasse.UMSATZSTEUERPFLICHTIG
         )
 
-        val events = mitglied.aktualisiereMitglied(neueProperties)
+        val events = mitglied.aktualisiereMitglied(neueProperties) { nextSeq() }
 
         assertEquals(4, events.size)
         assertTrue(events.any { it is NameGeaendert && it.neuerName == Name("Max Musterfrau") })
@@ -52,18 +55,18 @@ class MitgliedTest {
 
     @Test
     fun `wenn sich keine Eigenschaften aendern, werden keine Events erzeugt`() {
-        val event = Mitglied.erstelleMitglied(kundennummer, initialProperties)
+        val event = Mitglied.erstelleMitglied(kundennummer, initialProperties, nextSeq())
         val mitglied = Mitglied(event)
 
-        val events = mitglied.aktualisiereMitglied(initialProperties)
+        val events = mitglied.aktualisiereMitglied(initialProperties) { nextSeq() }
 
         assertEquals(0, events.size)
     }
 
     @Test
     fun `apply aktualisiert den Namen`() {
-        val mitglied = Mitglied(Mitglied.erstelleMitglied(kundennummer, initialProperties))
-        val event = NameGeaendert(kundennummer, Name("Neuer Name"))
+        val mitglied = Mitglied(Mitglied.erstelleMitglied(kundennummer, initialProperties, nextSeq()))
+        val event = NameGeaendert(kundennummer, Name("Neuer Name"), nextSeq())
         
         mitglied.apply(event)
         
@@ -72,9 +75,9 @@ class MitgliedTest {
 
     @Test
     fun `apply aktualisiert die Adresse`() {
-        val mitglied = Mitglied(Mitglied.erstelleMitglied(kundennummer, initialProperties))
+        val mitglied = Mitglied(Mitglied.erstelleMitglied(kundennummer, initialProperties, nextSeq()))
         val neueAdresse = initialAdresse.copy(strasse = Strasse("Neue Strasse"))
-        val event = AdresseGeaendert(kundennummer, neueAdresse)
+        val event = AdresseGeaendert(kundennummer, neueAdresse, nextSeq())
         
         mitglied.apply(event)
         
@@ -83,8 +86,8 @@ class MitgliedTest {
 
     @Test
     fun `apply aktualisiert die Email`() {
-        val mitglied = Mitglied(Mitglied.erstelleMitglied(kundennummer, initialProperties))
-        val event = EmailGeaendert(kundennummer, Email("neu@email.de"))
+        val mitglied = Mitglied(Mitglied.erstelleMitglied(kundennummer, initialProperties, nextSeq()))
+        val event = EmailGeaendert(kundennummer, Email("neu@email.de"), nextSeq())
         
         mitglied.apply(event)
         
@@ -93,8 +96,8 @@ class MitgliedTest {
 
     @Test
     fun `apply aktualisiert die Steuerklasse`() {
-        val mitglied = Mitglied(Mitglied.erstelleMitglied(kundennummer, initialProperties))
-        val event = SteuerklasseGeaendert(kundennummer, Steuerklasse.KLEINUNTERNEHMER)
+        val mitglied = Mitglied(Mitglied.erstelleMitglied(kundennummer, initialProperties, nextSeq()))
+        val event = SteuerklasseGeaendert(kundennummer, Steuerklasse.KLEINUNTERNEHMER, nextSeq())
         
         mitglied.apply(event)
         

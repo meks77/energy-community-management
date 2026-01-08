@@ -47,11 +47,16 @@ class MitgliederImportServiceTest {
         override fun next(): Pair<Mitgliedsnummer, MitgliedProperties> = iterator.next()
     }
 
+    private class SimpleEventSequenceGenerator(initialValue: Long = 0) : EventSequenceGenerator {
+        private var lastSequence = initialValue
+        override fun nextSequence(): Long = ++lastSequence
+    }
+
     @Test
     fun `importiere verarbeitet Liste erfolgreich`() {
         val repo = MockRepository()
         val importRepo = MockImportRepository()
-        val service = MitgliederImportService(repo, importRepo)
+        val service = MitgliederImportService(repo, importRepo, SimpleEventSequenceGenerator())
         val source = ListSource(listOf(kundennummer to properties))
 
         service.importiere(source)
@@ -64,7 +69,7 @@ class MitgliederImportServiceTest {
     fun `importiere speichert Fehler-Event bei Exception`() {
         val repo = MockRepository()
         val importRepo = MockImportRepository()
-        val service = MitgliederImportService(repo, importRepo)
+        val service = MitgliederImportService(repo, importRepo, SimpleEventSequenceGenerator())
         val source = object : MitgliedImportSource {
             override fun hasNext() = true
             override fun next() = throw RuntimeException("Test-Fehler")
@@ -84,7 +89,7 @@ class MitgliederImportServiceTest {
     fun `importiert neues Mitglied`() {
         val repo = MockRepository()
         val importRepo = MockImportRepository()
-        val service = MitgliederImportService(repo, importRepo)
+        val service = MitgliederImportService(repo, importRepo, SimpleEventSequenceGenerator())
         val source = ListSource(listOf(kundennummer to properties))
 
         service.importiere(source)
@@ -99,7 +104,7 @@ class MitgliederImportServiceTest {
     fun `aktualisiert bestehendes Mitglied`() {
         val repo = MockRepository()
         val importRepo = MockImportRepository()
-        val service = MitgliederImportService(repo, importRepo)
+        val service = MitgliederImportService(repo, importRepo, SimpleEventSequenceGenerator())
 
         // Zuerst anlegen
         service.importiere(ListSource(listOf(kundennummer to properties)))
@@ -118,7 +123,7 @@ class MitgliederImportServiceTest {
     fun `erzeugt keine Events wenn keine Aenderung vorliegt`() {
         val repo = MockRepository()
         val importRepo = MockImportRepository()
-        val service = MitgliederImportService(repo, importRepo)
+        val service = MitgliederImportService(repo, importRepo, SimpleEventSequenceGenerator())
 
         // Zuerst anlegen
         service.importiere(ListSource(listOf(kundennummer to properties)))

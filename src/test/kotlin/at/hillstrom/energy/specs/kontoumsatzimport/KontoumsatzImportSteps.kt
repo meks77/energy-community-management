@@ -29,7 +29,7 @@ class KontoumsatzImportSteps(private val context: SharedAppContext) {
     fun seienFolgendeKontoumsaetzeBereitsImportiert(rows: List<Map<String, String>>) {
         rows.forEach { row ->
             val properties = mapRowToProperties(row)
-            app.kontoumsatzRepository.speichereEvents(listOf(Kontoumsatz.importiereUmsatz(properties)))
+            app.kontoumsatzRepository.speichereEvents(listOf(Kontoumsatz.importiereUmsatz(properties, app.sequenceGenerator.nextSequence())))
         }
     }
 

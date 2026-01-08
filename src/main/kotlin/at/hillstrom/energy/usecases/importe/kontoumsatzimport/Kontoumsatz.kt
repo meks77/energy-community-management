@@ -18,8 +18,8 @@ class Kontoumsatz private constructor(
     }
 
     companion object {
-        fun importiereUmsatz(properties: KontoumsatzProperties): KontoumsatzImportiert {
-            return KontoumsatzImportiert(properties.buchungsreferenz, properties.copy())
+        fun importiereUmsatz(properties: KontoumsatzProperties, sequenznummer: Long): KontoumsatzImportiert {
+            return KontoumsatzImportiert(properties.buchungsreferenz, properties.copy(), sequenznummer)
         }
     }
 }

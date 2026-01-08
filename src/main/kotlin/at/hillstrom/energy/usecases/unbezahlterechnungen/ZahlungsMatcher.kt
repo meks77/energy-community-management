@@ -2,7 +2,7 @@ package at.hillstrom.energy.usecases.unbezahlterechnungen
 
 import at.hillstrom.energy.*
 
-class ZahlungsMatcher {
+class ZahlungsMatcher(private val sequenceGenerator: EventSequenceGenerator) {
 
     fun handle(event: KontoumsatzImportiert): ZahlungsClearingEvent {
         val rechnungsnummer = rechnungsnummerDerZahlung(event)
@@ -10,12 +10,14 @@ class ZahlungsMatcher {
             RechnungBeglichen(
                 rechnungsnummer = rechnungsnummer,
                 buchungsreferenz = event.buchungsreferenz,
-                beglichenAm = event.properties.buchungsdatum.wert
+                beglichenAm = event.properties.buchungsdatum.wert,
+                sequenznummer = sequenceGenerator.nextSequence()
             )
         } else {
             ZahlungNichtZugeordnet(
                 buchungsreferenz = event.buchungsreferenz,
-                zeitpunkt = event.properties.buchungsdatum.wert
+                zeitpunkt = event.properties.buchungsdatum.wert,
+                sequenznummer = sequenceGenerator.nextSequence()
             )
         }
     }

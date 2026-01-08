@@ -35,6 +35,10 @@ class KontoumsatzImportServiceTest {
             storedEvents.addAll(events)
             loadedEvents.addAll(events)
         }
+
+        override fun alleLaden(): List<KontoumsatzEvent> = loadedEvents
+        override fun ladeAbSequenz(sequenznummer: Long): List<KontoumsatzEvent> =
+            loadedEvents.filter { it.sequenznummer > sequenznummer }.sortedBy { it.sequenznummer }
     }
 
     private class MockImportRepository : ImportRepository {
@@ -50,11 +54,16 @@ class KontoumsatzImportServiceTest {
         override fun next(): KontoumsatzProperties = iterator.next()
     }
 
+    private class SimpleEventSequenceGenerator(initialValue: Long = 0) : EventSequenceGenerator {
+        private var lastSequence = initialValue
+        override fun nextSequence(): Long = ++lastSequence
+    }
+
     @Test
     fun `importiere verarbeitet Liste erfolgreich`() {
         val repo = MockRepository()
         val importRepo = MockImportRepository()
-        val service = KontoumsatzImportService(repo, importRepo)
+        val service = KontoumsatzImportService(repo, importRepo, SimpleEventSequenceGenerator())
         val source = ListSource(listOf(properties))
 
         service.importiere(source)
@@ -67,7 +76,7 @@ class KontoumsatzImportServiceTest {
     fun `importiere speichert Fehler-Event bei Exception`() {
         val repo = MockRepository()
         val importRepo = MockImportRepository()
-        val service = KontoumsatzImportService(repo, importRepo)
+        val service = KontoumsatzImportService(repo, importRepo, SimpleEventSequenceGenerator())
         val source = object : KontoumsatzImportSource {
             override fun hasNext() = true
             override fun next() = throw RuntimeException("Test-Fehler")
@@ -85,7 +94,7 @@ class KontoumsatzImportServiceTest {
     fun `importiert neuen Umsatz`() {
         val repo = MockRepository()
         val importRepo = MockImportRepository()
-        val service = KontoumsatzImportService(repo, importRepo)
+        val service = KontoumsatzImportService(repo, importRepo, SimpleEventSequenceGenerator())
         val source = ListSource(listOf(properties))
 
         service.importiere(source)
@@ -99,7 +108,7 @@ class KontoumsatzImportServiceTest {
     fun `erkennt Duplikate und importiert nicht erneut`() {
         val repo = MockRepository()
         val importRepo = MockImportRepository()
-        val service = KontoumsatzImportService(repo, importRepo)
+        val service = KontoumsatzImportService(repo, importRepo, SimpleEventSequenceGenerator())
 
         // Zuerst importieren
         service.importiere(ListSource(listOf(properties)))
@@ -115,7 +124,7 @@ class KontoumsatzImportServiceTest {
     fun `wirft Fehler bei abweichenden Daten fuer gleiche Buchungsreferenz`() {
         val repo = MockRepository()
         val importRepo = MockImportRepository()
-        val service = KontoumsatzImportService(repo, importRepo)
+        val service = KontoumsatzImportService(repo, importRepo, SimpleEventSequenceGenerator())
 
         // Zuerst importieren
         service.importiere(ListSource(listOf(properties)))

@@ -8,6 +8,9 @@ import java.time.LocalDate
 
 class UmsatzTest {
 
+    private var seq = 0L
+    private fun nextSeq() = ++seq
+
     @Test
     fun `importiert einen Umsatz`() {
         val properties = KontoumsatzProperties(
@@ -21,7 +24,7 @@ class UmsatzTest {
             mandatsId = MandatsId("MANDAT-1")
         )
 
-        val event = Kontoumsatz.importiereUmsatz(properties)
+        val event = Kontoumsatz.importiereUmsatz(properties, nextSeq())
         val kontoumsatz = Kontoumsatz(event)
 
         assertEquals(properties, kontoumsatz.properties)
@@ -41,7 +44,7 @@ class UmsatzTest {
             mandatsId = MandatsId("MANDAT-1")
         )
 
-        val kontoumsatz = Kontoumsatz(Kontoumsatz.importiereUmsatz(properties))
+        val kontoumsatz = Kontoumsatz(Kontoumsatz.importiereUmsatz(properties, nextSeq()))
 
         // Gleiche Properties sollten kein Problem sein
         assertDoesNotThrow {

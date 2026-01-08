@@ -6,4 +6,6 @@ import at.hillstrom.energy.Buchungsreferenz
 interface KontoumsatzRepository {
     fun speichereEvents(events: List<KontoumsatzEvent>)
     fun ladeEvents(buchungsreferenz: Buchungsreferenz): List<KontoumsatzEvent>
+    fun alleLaden(): List<KontoumsatzEvent>
+    fun ladeAbSequenz(sequenznummer: Long): List<KontoumsatzEvent>
 }

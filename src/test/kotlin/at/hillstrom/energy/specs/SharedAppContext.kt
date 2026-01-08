@@ -5,11 +5,13 @@ import at.hillstrom.energy.usecases.importe.ImportRepository
 import at.hillstrom.energy.usecases.importe.kontoumsatzimport.KontoumsatzRepository
 import at.hillstrom.energy.usecases.importe.mitgliederimport.MitgliedRepository
 import at.hillstrom.energy.usecases.importe.rechnungsimport.RechnungRepository
+import at.hillstrom.energy.usecases.unbezahlterechnungen.ProcessedEventRepository
 import at.hillstrom.energy.usecases.unbezahlterechnungen.UnbezahlteRechnung
 import io.cucumber.java.Before
 import at.hillstrom.energy.usecases.unbezahlterechnungen.UnbezahlteRechnungenRepository as UnbezahlteRechnungenRepositoryInterface
 
 class SharedAppContext {
+
     private val _mitgliedRepository = InMemoryMitgliedRepository()
     val mitgliedRepository: MitgliedRepository get() = _mitgliedRepository
 
@@ -21,6 +23,8 @@ class SharedAppContext {
 
     private val _unbezahlteRechnungenRepository = InMemoryUnbezahlteRechnungenRepository()
 
+    private val _processedEventRepository = InMemoryProcessedEventRepository()
+
     lateinit var app: App
 
     @Before
@@ -30,7 +34,9 @@ class SharedAppContext {
             rechnungRepository = _rechnungRepository,
             kontoumsatzRepository = _kontoumsatzRepository,
             importRepository = _importRepository,
-            unbezahlteRechnungenRepository = _unbezahlteRechnungenRepository
+            unbezahlteRechnungenRepository = _unbezahlteRechnungenRepository,
+            processedEventRepository = _processedEventRepository,
+            sequenceGenerator = SimpleEventSequenceGenerator()
         )
     }
 
@@ -68,6 +74,10 @@ private class InMemoryKontoumsatzRepository : KontoumsatzRepository {
             storage.computeIfAbsent(event.buchungsreferenz) { mutableListOf() }.add(event)
         }
     }
+
+    override fun alleLaden(): List<KontoumsatzEvent> = storage.values.flatten()
+    override fun ladeAbSequenz(sequenznummer: Long): List<KontoumsatzEvent> = 
+        storage.values.flatten().filter { it.sequenznummer > sequenznummer }.sortedBy { it.sequenznummer }
 }
 
 private class InMemoryImportRepository : ImportRepository {
@@ -75,6 +85,14 @@ private class InMemoryImportRepository : ImportRepository {
     override fun speichereImportEvent(event: ImportEvent) {
         events.add(event)
     }
+}
+
+private class InMemoryProcessedEventRepository : ProcessedEventRepository {
+    private var lastSequence = 0L
+    override fun saveLastProcessedSequence(sequence: Long) {
+        lastSequence = sequence
+    }
+    override fun getLastProcessedSequence(): Long = lastSequence
 }
 
 private class InMemoryUnbezahlteRechnungenRepository : UnbezahlteRechnungenRepositoryInterface {
@@ -100,4 +118,9 @@ private class InMemoryUnbezahlteRechnungenRepository : UnbezahlteRechnungenRepos
     override fun istAlsBezahltMarkiert(rechnungsnummer: Rechnungsnummer): Boolean {
         return vorabBezahlt.contains(rechnungsnummer)
     }
+}
+
+private class SimpleEventSequenceGenerator(initialValue: Long = 0) : EventSequenceGenerator {
+    private var lastSequence = initialValue
+    override fun nextSequence(): Long = ++lastSequence
 }

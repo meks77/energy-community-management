@@ -32,7 +32,8 @@ class ZahlungsClearingSteps(private val context: SharedAppContext) {
                 rechnungsdatum = Rechnungsdatum(Datum(LocalDate.parse(datum))),
                 faelligkeitsdatum = Faelligkeitsdatum(Datum(LocalDate.parse(datum).plusDays(14))),
                 steuerklasse = RechnungsSteuerklasse.PRIVAT
-            )
+            ),
+            sequenznummer = app.sequenceGenerator.nextSequence()
         )
         app.zahlungsClearingReadModel.handle(event)
     }
@@ -61,7 +62,8 @@ class ZahlungsClearingSteps(private val context: SharedAppContext) {
                 buchungsreferenz = Buchungsreferenz("REF"),
                 zahlungsreferenz = null,
                 mandatsId = null
-            )
+            ),
+            sequenznummer = app.sequenceGenerator.nextSequence()
         )
         handleKontoumsatz(event)
     }
@@ -80,17 +82,16 @@ class ZahlungsClearingSteps(private val context: SharedAppContext) {
                 buchungsreferenz = Buchungsreferenz("REF"),
                 zahlungsreferenz = Zahlungsreferenz(zahlungsreferenzWert),
                 mandatsId = null
-            )
+            ),
+            sequenznummer = app.sequenceGenerator.nextSequence()
         )
         handleKontoumsatz(event)
     }
 
     private fun handleKontoumsatz(event: KontoumsatzImportiert) {
-        val resultEvent = app.zahlungsMatcher.handle(event)
-        geworfeneEvents.add(resultEvent)
-        if (resultEvent is RechnungBeglichen) {
-            app.zahlungsClearingReadModel.handle(resultEvent)
-        }
+        app.kontoumsatzRepository.speichereEvents(listOf(event))
+        val ergebnisse = app.zahlungsMatcherService.verarbeiteNeueEvents()
+        geworfeneEvents.addAll(ergebnisse)
     }
 
     @Dann("wurde das Ereignis geworfen, dass die Zahlung nicht zugeordnet werden konnte")

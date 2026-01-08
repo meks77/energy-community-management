@@ -5,6 +5,15 @@ import java.time.LocalDate
 import java.util.UUID
 
 // --- Allgemein ---
+interface DomainEvent {
+    val sequenznummer: Long
+}
+
+interface EventSequenceGenerator {
+    fun nextSequence(): Long
+}
+
+
 data class Betrag(val wert: BigDecimal)
 data class Datum(val wert: LocalDate)
 
@@ -38,8 +47,9 @@ data class MitgliedProperties(
     val steuerklasse: Steuerklasse
 )
 
-sealed class MitgliedEvent {
+sealed class MitgliedEvent : DomainEvent {
     abstract val kundennummer: Mitgliedsnummer
+    abstract override val sequenznummer: Long
 }
 
 data class MitgliedAngelegt(
@@ -47,54 +57,73 @@ data class MitgliedAngelegt(
     val name: Name,
     val adresse: Adresse,
     val email: Email,
-    val steuerklasse: Steuerklasse
+    val steuerklasse: Steuerklasse,
+    override val sequenznummer: Long
 ) : MitgliedEvent()
 
 sealed class MitgliedGeandertEvent : MitgliedEvent()
 
 data class NameGeaendert(
     override val kundennummer: Mitgliedsnummer,
-    val neuerName: Name
+    val neuerName: Name,
+    override val sequenznummer: Long
 ) : MitgliedGeandertEvent()
 
 data class AdresseGeaendert(
     override val kundennummer: Mitgliedsnummer,
-    val neueAdresse: Adresse
+    val neueAdresse: Adresse,
+    override val sequenznummer: Long
 ) : MitgliedGeandertEvent()
 
 data class EmailGeaendert(
     override val kundennummer: Mitgliedsnummer,
-    val neueEmail: Email
+    val neueEmail: Email,
+    override val sequenznummer: Long
 ) : MitgliedGeandertEvent()
 
 data class SteuerklasseGeaendert(
     override val kundennummer: Mitgliedsnummer,
-    val neueSteuerklasse: Steuerklasse
+    val neueSteuerklasse: Steuerklasse,
+    override val sequenznummer: Long
 ) : MitgliedGeandertEvent()
 
 // --- Import Events ---
 
-sealed class ImportEvent
+sealed class ImportEvent : DomainEvent {
+    abstract override val sequenznummer: Long
+}
 
-data class MitgliederImportErfolgreich(val zeitpunkt: java.time.Instant = java.time.Instant.now()) : ImportEvent()
+data class MitgliederImportErfolgreich(
+    val zeitpunkt: java.time.Instant = java.time.Instant.now(),
+    override val sequenznummer: Long
+) : ImportEvent()
 
 data class MitgliederImportFehlgeschlagen(
     val fehler: String,
-    val zeitpunkt: java.time.Instant = java.time.Instant.now()
+    val zeitpunkt: java.time.Instant = java.time.Instant.now(),
+    override val sequenznummer: Long
 ) : ImportEvent()
 
-data class RechnungenImportErfolgreich(val zeitpunkt: java.time.Instant = java.time.Instant.now()) : ImportEvent()
+data class RechnungenImportErfolgreich(
+    val zeitpunkt: java.time.Instant = java.time.Instant.now(),
+    override val sequenznummer: Long
+) : ImportEvent()
 
 data class RechnungenImportFehlgeschlagen(
     val fehler: String,
-    val zeitpunkt: java.time.Instant = java.time.Instant.now()
+    val zeitpunkt: java.time.Instant = java.time.Instant.now(),
+    override val sequenznummer: Long
 ) : ImportEvent()
 
-data class KontoumsaetzeImportErfolgreich(val zeitpunkt: java.time.Instant = java.time.Instant.now()) : ImportEvent()
+data class KontoumsaetzeImportErfolgreich(
+    val zeitpunkt: java.time.Instant = java.time.Instant.now(),
+    override val sequenznummer: Long
+) : ImportEvent()
 
 data class KontoumsaetzeImportFehlgeschlagen(
     val fehler: String,
-    val zeitpunkt: java.time.Instant = java.time.Instant.now()
+    val zeitpunkt: java.time.Instant = java.time.Instant.now(),
+    override val sequenznummer: Long
 ) : ImportEvent()
 
 // --- Rechnung ---
@@ -135,11 +164,13 @@ data class RechnungProperties(
 
 data class RechnungErstellt(
     val id: Rechnungsnummer,
-    val properties: RechnungProperties
-)
+    val properties: RechnungProperties,
+    override val sequenznummer: Long
+) : DomainEvent
 
-sealed class ZahlungsClearingEvent {
+sealed class ZahlungsClearingEvent : DomainEvent {
     abstract val id: UUID
+    abstract override val sequenznummer: Long
 }
 
 data class RechnungBeglichen(
@@ -147,12 +178,14 @@ data class RechnungBeglichen(
     val rechnungsnummer: Rechnungsnummer,
     val buchungsreferenz: Buchungsreferenz,
     val beglichenAm: Datum,
+    override val sequenznummer: Long
 ) : ZahlungsClearingEvent()
 
 data class ZahlungNichtZugeordnet(
     override val id: UUID = UUID.randomUUID(),
     val buchungsreferenz: Buchungsreferenz,
     val zeitpunkt: Datum,
+    override val sequenznummer: Long
 ) : ZahlungsClearingEvent()
 
 // --- Kontoumsatz ---
@@ -178,11 +211,13 @@ data class KontoumsatzProperties(
     val mandatsId: MandatsId?
 )
 
-sealed class KontoumsatzEvent {
+sealed class KontoumsatzEvent : DomainEvent {
     abstract val buchungsreferenz: Buchungsreferenz
+    abstract override val sequenznummer: Long
 }
 
 data class KontoumsatzImportiert(
     override val buchungsreferenz: Buchungsreferenz,
-    val properties: KontoumsatzProperties
+    val properties: KontoumsatzProperties,
+    override val sequenznummer: Long
 ) : KontoumsatzEvent()

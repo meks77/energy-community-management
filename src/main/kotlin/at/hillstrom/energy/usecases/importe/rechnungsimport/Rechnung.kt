@@ -18,8 +18,8 @@ class Rechnung private constructor(
     }
 
     companion object {
-        fun erstelleRechnung(properties: RechnungProperties): RechnungErstellt {
-            return RechnungErstellt(properties.rechnungsnummer, properties)
+        fun erstelleRechnung(properties: RechnungProperties, sequenznummer: Long): RechnungErstellt {
+            return RechnungErstellt(properties.rechnungsnummer, properties, sequenznummer)
         }
     }
 }
